@@ -1,0 +1,17 @@
+D:\Users\András\Dokumentumok\BME\6. félév\Önlab\RoboPro\RoboPro\bin\Debug\RoboPro.exe.config
+D:\Users\András\Dokumentumok\BME\6. félév\Önlab\RoboPro\RoboPro\bin\Debug\RoboPro.exe
+D:\Users\András\Dokumentumok\BME\6. félév\Önlab\RoboPro\RoboPro\bin\Debug\RoboPro.pdb
+D:\Users\András\Dokumentumok\BME\6. félév\Önlab\RoboPro\RoboPro\obj\Debug\DesktopClient.csprojAssemblyReference.cache
+D:\Users\András\Dokumentumok\BME\6. félév\Önlab\RoboPro\RoboPro\obj\Debug\RoboPro.robotClientForm.resources
+D:\Users\András\Dokumentumok\BME\6. félév\Önlab\RoboPro\RoboPro\obj\Debug\RoboPro.Properties.Resources.resources
+D:\Users\András\Dokumentumok\BME\6. félév\Önlab\RoboPro\RoboPro\obj\Debug\DesktopClient.csproj.GenerateResource.cache
+D:\Users\András\Dokumentumok\BME\6. félév\Önlab\RoboPro\RoboPro\obj\Debug\DesktopClient.csproj.CoreCompileInputs.cache
+D:\Users\András\Dokumentumok\BME\6. félév\Önlab\RoboPro\RoboPro\obj\Debug\RoboPro.exe
+D:\Users\András\Dokumentumok\BME\6. félév\Önlab\RoboPro\RoboPro\obj\Debug\RoboPro.pdb
+D:\Users\András\Dokumentumok\BME\6. félév\Önlab\RoboPro\RoboPro\bin\Debug\AForge.dll
+D:\Users\András\Dokumentumok\BME\6. félév\Önlab\RoboPro\RoboPro\bin\Debug\AForge.Video.dll
+D:\Users\András\Dokumentumok\BME\6. félév\Önlab\RoboPro\RoboPro\bin\Debug\AForge.xml
+D:\Users\András\Dokumentumok\BME\6. félév\Önlab\RoboPro\RoboPro\bin\Debug\AForge.Video.xml
+D:\Users\András\Dokumentumok\BME\6. félév\Önlab\RoboPro\RoboPro\obj\Debug\DesktopClient.csproj.CopyComplete
+D:\Users\András\Dokumentumok\BME\6. félév\Önlab\RoboPro\RoboPro\bin\Debug\websocket-sharp.dll
+D:\Users\András\Dokumentumok\BME\6. félév\Önlab\RoboPro\RoboPro\bin\Debug\websocket-sharp.pdb
