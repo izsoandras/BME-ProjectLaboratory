@@ -252,5 +252,37 @@ namespace RoboPro
             //Logs the event.
             logger.LogMsg("WebSocket message sent: " + tbWSSend.Text);
         }
+
+        // TODO: decide if we need the continous pressed event or 1 is enough
+        /// <summary>
+        /// The function which sends the pressed key to the robot through WebSocket. Only WASD keys are listened
+        /// </summary>
+        /// <param name="sender">The source of the event</param>
+        /// <param name="e">The <see cref="KeyEventArgs"/> instance containing the event data.</param>
+        private void robotClientForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (ws != null)
+            {
+                if(e.KeyCode == Keys.W)
+                    ws.Send("KB:W,D");
+                else if(e.KeyCode == Keys.S) 
+                    ws.Send("KB:S,D");
+            } 
+        }
+        /// <summary>
+        /// The function which sends the released key to the robot through WebSocket. Only WASD keys are listened
+        /// </summary>
+        /// <param name="sender">The source of the event</param>
+        /// <param name="e">The <see cref="KeyEventArgs"/> instance containing the event data.</param>
+        private void robotClientForm_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (ws != null)
+            {
+                if (e.KeyCode == Keys.W)
+                    ws.Send("KB:W,U");
+                else if (e.KeyCode == Keys.S)
+                    ws.Send("KB:S,U");
+            }
+        }
     }
 }

@@ -32,15 +32,15 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.pbCameraView = new System.Windows.Forms.PictureBox();
             this.tbConsole = new System.Windows.Forms.TextBox();
+            this.btnWSSend = new System.Windows.Forms.Button();
+            this.tbWSSend = new System.Windows.Forms.TextBox();
+            this.labelWSSend = new System.Windows.Forms.Label();
             this.labelWSAddress = new System.Windows.Forms.Label();
             this.btnWSConnect = new System.Windows.Forms.Button();
             this.tbWSAddress = new System.Windows.Forms.TextBox();
             this.labelCamAddress = new System.Windows.Forms.Label();
             this.tbCamAddress = new System.Windows.Forms.TextBox();
             this.btnConnect = new System.Windows.Forms.Button();
-            this.labelWSSend = new System.Windows.Forms.Label();
-            this.tbWSSend = new System.Windows.Forms.TextBox();
-            this.btnWSSend = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -125,6 +125,34 @@
             this.tbConsole.Size = new System.Drawing.Size(579, 108);
             this.tbConsole.TabIndex = 0;
             // 
+            // btnWSSend
+            // 
+            this.btnWSSend.Enabled = false;
+            this.btnWSSend.Location = new System.Drawing.Point(116, 208);
+            this.btnWSSend.Name = "btnWSSend";
+            this.btnWSSend.Size = new System.Drawing.Size(75, 23);
+            this.btnWSSend.TabIndex = 9;
+            this.btnWSSend.Text = "Send";
+            this.btnWSSend.UseVisualStyleBackColor = true;
+            this.btnWSSend.Click += new System.EventHandler(this.btnWSSend_Click);
+            // 
+            // tbWSSend
+            // 
+            this.tbWSSend.Enabled = false;
+            this.tbWSSend.Location = new System.Drawing.Point(6, 182);
+            this.tbWSSend.Name = "tbWSSend";
+            this.tbWSSend.Size = new System.Drawing.Size(185, 20);
+            this.tbWSSend.TabIndex = 8;
+            // 
+            // labelWSSend
+            // 
+            this.labelWSSend.AutoSize = true;
+            this.labelWSSend.Location = new System.Drawing.Point(3, 166);
+            this.labelWSSend.Name = "labelWSSend";
+            this.labelWSSend.Size = new System.Drawing.Size(140, 13);
+            this.labelWSSend.TabIndex = 7;
+            this.labelWSSend.Text = "Send WebSocket message:";
+            // 
             // labelWSAddress
             // 
             this.labelWSAddress.AutoSize = true;
@@ -178,43 +206,18 @@
             this.btnConnect.UseVisualStyleBackColor = true;
             this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
             // 
-            // labelWSSend
-            // 
-            this.labelWSSend.AutoSize = true;
-            this.labelWSSend.Location = new System.Drawing.Point(3, 166);
-            this.labelWSSend.Name = "labelWSSend";
-            this.labelWSSend.Size = new System.Drawing.Size(140, 13);
-            this.labelWSSend.TabIndex = 7;
-            this.labelWSSend.Text = "Send WebSocket message:";
-            // 
-            // tbWSSend
-            // 
-            this.tbWSSend.Enabled = false;
-            this.tbWSSend.Location = new System.Drawing.Point(6, 182);
-            this.tbWSSend.Name = "tbWSSend";
-            this.tbWSSend.Size = new System.Drawing.Size(185, 20);
-            this.tbWSSend.TabIndex = 8;
-            // 
-            // btnWSSend
-            // 
-            this.btnWSSend.Enabled = false;
-            this.btnWSSend.Location = new System.Drawing.Point(116, 208);
-            this.btnWSSend.Name = "btnWSSend";
-            this.btnWSSend.Size = new System.Drawing.Size(75, 23);
-            this.btnWSSend.TabIndex = 9;
-            this.btnWSSend.Text = "Send";
-            this.btnWSSend.UseVisualStyleBackColor = true;
-            this.btnWSSend.Click += new System.EventHandler(this.btnWSSend_Click);
-            // 
             // robotClientForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.splitContainer1);
+            this.KeyPreview = true;
             this.Name = "robotClientForm";
             this.Text = "Form1";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.robotClientForm_FormClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.robotClientForm_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.robotClientForm_KeyUp);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
