@@ -1,0 +1,16 @@
+Protokolok:
+	WebSocket: 	KEZELŐ:
+					Billentyűzet: KB:GOMB,IRÁNY\n
+						KB:W,U
+							,D
+						   A,U
+						     D
+						   S,U
+						     D
+						   D,U
+						     D
+					JoyStick:
+						JS:
+	Serial:		TÍPUS:ÉRTÉK1[,ÉRTÉK2]
+					Sebesség: S:MOTOR1,MOTOR2\n (MOTOR1,MOTOR2 € [-100,100])
+					PWM: P:FREQ\n
