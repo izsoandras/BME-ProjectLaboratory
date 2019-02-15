@@ -15,6 +15,7 @@ char * serialdata;
 int length;
 int speedL;
 int speedR;
+int freq;
 bool ledOn = false;
 
 void setup() {
@@ -22,6 +23,9 @@ void setup() {
 	pinMode(BUILTIN_LED, OUTPUT);
 	MR.setmotor(_STOP);
 	ML.setmotor(_STOP);
+	digitalWrite(BUILTIN_LED, HIGH);
+	delay(100);
+	digitalWrite(BUILTIN_LED, LOW);
 	Serial.println("Setup ready");
 }
 
@@ -35,38 +39,60 @@ void loop() {
 
 	if(Serial.available() > 0)
 	{
-		digitalWrite(BUILTIN_LED, ledOn);
-		serialString = Serial.readStringUntil(',');
-		speedL = min(serialString.toInt(), 100);
-		serialString = Serial.readStringUntil('\n');
-		speedR = min(serialString.toInt(), 100);
-		ledOn = !ledOn;
+		if((serialString = Serial.readStringUntil(':')) == "S")
+		{
+			serialString = Serial.readStringUntil(',');
+			speedL = min(serialString.toInt(), 100);
+			serialString = Serial.readStringUntil('\n');
+			speedR = min(serialString.toInt(), 100);
+			ledOn = !ledOn;
+
+			Serial.print("Setting motor to: ");
+			Serial.print(speedL);
+			Serial.print(",");
+			Serial.println(speedR);
+
+			if (speedL == 0)
+			{
+				ML.setmotor(_STOP);
+			}
+			else if (speedL > 0) {
+				ML.setmotor(_CCW, speedL);
+			}
+			else
+			{
+				ML.setmotor(_CW, -1 * speedL);
+			}
+
+			if (speedR == 0)
+			{
+				MR.setmotor(_STOP);
+			}
+			else if (speedR > 0) {
+				MR.setmotor(_CW, speedR);
+			}
+			else
+			{
+				MR.setmotor(_CCW, -1 * speedR);
+			}
+		} else if(serialString == "P"){
+			serialString = Serial.readStringUntil('\n');
+			freq = serialString.toInt();
+			Serial.print("Setting PWM frequency to: ");
+			Serial.println(freq);
+			ML.setfreq(freq);
+			MR.setfreq(freq);
+		} else if(serialString == "?")
+		{
+			Serial.print("Motor speed: ");
+			Serial.print(speedL);
+			Serial.print(",");
+			Serial.println(speedR);
+			Serial.print("PWM frequency: ");
+			Serial.println(freq);
+		}
 		
-		Serial.print("Setting motor to: ");
-		Serial.print(speedL);
-		Serial.print(",");
-		Serial.println(speedR);
 
-		if(speedL == 0)
-		{
-			ML.setmotor(_STOP);
-		} else if(speedL > 0){
-			ML.setmotor(_CCW, speedL);
-		} else
-		{
-			ML.setmotor(_CW, -1*speedL);
-		}
-
-		if (speedR == 0)
-		{
-			MR.setmotor(_STOP);
-		}
-		else if (speedR > 0) {
-			MR.setmotor(_CW, speedR);
-		}
-		else
-		{
-			MR.setmotor(_CCW, -1*speedR);
-		}
+		
 	}
 }
