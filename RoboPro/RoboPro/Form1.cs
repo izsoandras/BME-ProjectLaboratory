@@ -9,29 +9,53 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using AForge.Video;
 using System.IO;
+using System.IO.Ports;
+using System.Runtime.CompilerServices;
 using WebSocketSharp;
 
 namespace RoboPro
 {
+
+
     /// <summary>
     /// The inherited class from Windows.Forms.Form, which needed to make our own
     /// </summary>
     /// <seealso cref="System.Windows.Forms.Form" />
     public partial class robotClientForm : Form
     {
+        private delegate void HandledKeyListener(char key, char dir);
+
+        private event HandledKeyListener HandledKeyEvent;
+
+        private enum MyKeys
+        {
+            Wkey = 0,
+            Akey = 1,
+            Skey = 2,
+            Dkey = 3
+        };
+
+        bool[] keyStates = new bool[4] { false, false, false, false };
+
         /// <summary>
         /// The video stream from the camera of the robot
         /// </summary>
-        MJPEGStream videoStream;
+        private MJPEGStream videoStream;
+
         /// <summary>
         /// The logger, which logs messages to all subscribed places. 
         /// The <c>Logger.Log</c> event is fired when the <c>Logger.LogMsg</c> method is called.
         /// </summary>
-        Utils.Logger logger;
+        private Utils.Logger logger;
+
         /// <summary>
         /// The WebSocket object, which represents the connection to the robot's WebSocket server.
         /// </summary>
-        WebSocket ws;
+        private WebSocket ws;
+
+        private SerialPort port;
+
+
         /// <summary>
         /// Initializes a new instance of the <see cref="robotClientForm"/> class.
         /// After the auto generated initialization we check if there are previous values to load, and subscribe the loggers.
@@ -51,7 +75,7 @@ namespace RoboPro
                 }
             }
             logger = new Utils.Logger();
-             logger.Log += LogToConsole;
+            logger.Log += LogToConsole;
         }
         /// <summary>
         /// Logs to the application's console.
@@ -145,10 +169,12 @@ namespace RoboPro
         /// <param name="e">The <see cref="FormClosingEventArgs"/> instance containing the event data.</param>
         private void robotClientForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(videoStream != null)
+            if (videoStream != null)
                 videoStream.Stop();
             if (ws != null)
                 ws.Close();
+            if (port != null)
+                port.Close();
         }
         /// <summary>
         /// Enables/disables the controls connected to the WebSocket message sending functionality.
@@ -193,6 +219,13 @@ namespace RoboPro
                 }
                 //Enables the controls' for message sending
                 SetEnableWSMessage(true);
+
+                //Change the button's behaviour to disconnect
+                btnWSConnect.Text = "Disconnect";
+                btnWSConnect.Click -= btnWSConnect_Click;
+                btnWSConnect.Click += btnWSDisconnect_Click;
+                HandledKeyEvent += HandleKey_WS;
+                tbWSAddress.Enabled = false;
             };
             ws.OnError += (opensender, evt) =>
             {
@@ -205,6 +238,14 @@ namespace RoboPro
                 //Log the event
                 logger.LogMsg("Disconnected from WebSocet server");
                 SetEnableWSMessage(false);
+
+
+                //Change the button's behaviour
+                btnWSConnect.Text = "Connect";
+                btnWSConnect.Click -= btnWSDisconnect_Click;
+                btnWSConnect.Click += btnWSConnect_Click;
+                HandledKeyEvent -= HandleKey_WS;
+                tbWSAddress.Enabled = true;
             };
             ws.OnMessage += (opensender, evt) =>
             {
@@ -213,14 +254,6 @@ namespace RoboPro
                 logger.LogMsg("WebSocket message arrived: " + msge.Data);
             };
             ws.Connect();
-
-
-            // TODO put it in the OnOpen event
-            //Change the button's behaviour to disconnect
-            btnWSConnect.Text = "Disconnect";
-            btnWSConnect.Click -= btnWSConnect_Click;
-            btnWSConnect.Click += btnWSDisconnect_Click;
-            tbWSAddress.Enabled = false;
         }
         /// <summary>
         /// Handles the Click event of the btnWSDisconnect control.
@@ -232,12 +265,6 @@ namespace RoboPro
         {
             //Close the connection
             ws.Close();
-
-            //Change the button's behaviour
-            btnWSConnect.Text = "Connect";
-            btnWSConnect.Click -= btnWSDisconnect_Click;
-            btnWSConnect.Click += btnWSConnect_Click;
-            tbWSAddress.Enabled = true;
         }
         /// <summary>
         /// Handles the Click event of the btnWSSend control.
@@ -253,7 +280,16 @@ namespace RoboPro
             logger.LogMsg("WebSocket message sent: " + tbWSSend.Text);
         }
 
-        // TODO: decide if we need the continous pressed event or 1 is enough
+        private void HandleKey_WS(char key, char dir)
+        {
+            if (ws != null)
+            {
+                string msg = $"KB:{key},{dir}";
+                ws.Send(msg);
+                logger.LogMsg("WebSocket message sent: " + msg);
+            }
+        }
+        
         /// <summary>
         /// The function which sends the pressed key to the robot through WebSocket. Only WASD keys are listened
         /// </summary>
@@ -261,13 +297,34 @@ namespace RoboPro
         /// <param name="e">The <see cref="KeyEventArgs"/> instance containing the event data.</param>
         private void robotClientForm_KeyDown(object sender, KeyEventArgs e)
         {
-            if (ws != null)
+            if (e.KeyCode == Keys.W && !keyStates[(int)MyKeys.Wkey])
             {
-                if(e.KeyCode == Keys.W)
-                    ws.Send("KB:W,D");
-                else if(e.KeyCode == Keys.S) 
-                    ws.Send("KB:S,D");
-            } 
+                logger.LogMsg("Key down: W");
+                keyStates[(int)MyKeys.Wkey] = true;
+                if(HandledKeyEvent != null)
+                    HandledKeyEvent('W', 'D');
+            }
+            else if (e.KeyCode == Keys.A && !keyStates[(int)MyKeys.Akey])
+            {
+                logger.LogMsg("Key down: A");
+                keyStates[(int)MyKeys.Akey] = true;
+                if (HandledKeyEvent != null)
+                    HandledKeyEvent('A', 'D');
+            }
+            else if (e.KeyCode == Keys.S && !keyStates[(int)MyKeys.Skey])
+            {
+                logger.LogMsg("Key down: S");
+                keyStates[(int)MyKeys.Skey] = true;
+                if (HandledKeyEvent != null)
+                    HandledKeyEvent('S', 'D');
+            }
+            else if (e.KeyCode == Keys.D && !keyStates[(int)MyKeys.Dkey])
+            {
+                logger.LogMsg("Key down: D");
+                keyStates[(int)MyKeys.Dkey] = true;
+                if (HandledKeyEvent != null)
+                    HandledKeyEvent('D', 'D');
+            }
         }
         /// <summary>
         /// The function which sends the released key to the robot through WebSocket. Only WASD keys are listened
@@ -276,13 +333,131 @@ namespace RoboPro
         /// <param name="e">The <see cref="KeyEventArgs"/> instance containing the event data.</param>
         private void robotClientForm_KeyUp(object sender, KeyEventArgs e)
         {
-            if (ws != null)
+            if (e.KeyCode == Keys.W)
             {
-                if (e.KeyCode == Keys.W)
-                    ws.Send("KB:W,U");
-                else if (e.KeyCode == Keys.S)
-                    ws.Send("KB:S,U");
+                logger.LogMsg("Key up: W");
+                keyStates[(int)MyKeys.Wkey] = false;
+                if (HandledKeyEvent != null)
+                    HandledKeyEvent('W', 'U');
             }
+            else if (e.KeyCode == Keys.A)
+            {
+                logger.LogMsg("Key up: A");
+                keyStates[(int)MyKeys.Akey] = false;
+                if (HandledKeyEvent != null)
+                    HandledKeyEvent('A', 'U');
+            }
+            else if (e.KeyCode == Keys.S)
+            {
+                logger.LogMsg("Key up: S");
+                keyStates[(int)MyKeys.Skey] = false;
+                if (HandledKeyEvent != null)
+                    HandledKeyEvent('S', 'U');
+            }
+            else if (e.KeyCode == Keys.D)
+            {
+                logger.LogMsg("Key up: D");
+                keyStates[(int)MyKeys.Dkey] = false;
+                if (HandledKeyEvent != null)
+                    HandledKeyEvent('D', 'U');
+            }
+
+        }
+
+
+
+        private void btnSerialOpen_Click(object sender, EventArgs e)
+        {
+            port = new SerialPort(tbCOMport.Text, 115200);
+            port.DataReceived += new SerialDataReceivedEventHandler(serial_DataReceived);
+            port.Open();
+            if (port.IsOpen)
+            {
+                btnSerialOpen.Click -= btnSerialOpen_Click;
+                btnSerialOpen.Click += btnSerialClose_Click;
+                HandledKeyEvent += HandleKey_Serial;
+                btnSerialOpen.Text = "Close";
+                tbSerialSend.Enabled = true;
+                btnSerialSend.Enabled = true;
+                logger.LogMsg("Serial port " + port.PortName + "is open");
+            }
+        }
+
+        private void serial_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            while (port.BytesToRead > 0)
+            {
+                logger.LogMsg("Serial data read: " + port.ReadLine());
+            }
+        }
+
+        private void btnSerialClose_Click(object sender, EventArgs e)
+        {
+            port.Close();
+            btnSerialOpen.Click -= btnSerialClose_Click;
+            btnSerialOpen.Click += btnSerialOpen_Click;
+            HandledKeyEvent -= HandleKey_Serial;
+            btnSerialOpen.Text = "Open";
+            tbSerialSend.Enabled = false;
+            btnSerialSend.Enabled = false;
+            logger.LogMsg("Serial port " + port.PortName + "is closed");
+        }
+
+        private void btnSerialSend_Click(object sender, EventArgs e)
+        {
+            if (port != null && port.IsOpen)
+            {
+                port.WriteLine(tbSerialSend.Text);
+            }
+        }
+
+        private enum Acceleration
+        {
+            Forward = 1,
+            None = 0,
+            Backward = -1
+        }
+        private enum Steering
+        {
+            Left = 1,
+            None = 0,
+            Right = -1
+        }
+
+        private void HandleKey_Serial(char key, char dir)
+        {
+            if (port != null && port.IsOpen)
+            {
+                int accel;
+                int steer;
+                if (keyStates[(int)MyKeys.Wkey] == keyStates[(int)MyKeys.Skey])
+                    accel = (int)Acceleration.None;
+                else if (keyStates[(int)MyKeys.Wkey])
+                    accel = (int)Acceleration.Forward;
+                else
+                    accel = (int)Acceleration.Backward;
+
+                if (keyStates[(int)MyKeys.Akey] == keyStates[(int)MyKeys.Dkey])
+                    steer = (int)Steering.None;
+                else if (keyStates[(int)MyKeys.Akey])
+                    steer = (int)Steering.Left;
+                else
+                    steer = (int)Steering.Right;
+
+                string msg;
+                if (accel == 0)
+                {
+                    msg = $"{-30 * steer},{30 * steer}";
+                    port.WriteLine(msg);
+                }
+                else
+                {
+                    msg = $"{accel * (30 - 5 * steer)},{accel * (30 + 5 * steer)}";
+                    port.WriteLine(msg);
+                }
+                logger.LogMsg("Serial message sent: " + msg);
+            }
+
         }
     }
 }
