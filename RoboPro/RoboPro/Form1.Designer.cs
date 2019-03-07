@@ -37,6 +37,13 @@
             this.tbCamAddress = new System.Windows.Forms.TextBox();
             this.labelCamAddress = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.nudPWMfreq = new System.Windows.Forms.NumericUpDown();
+            this.nudDutyLeft = new System.Windows.Forms.NumericUpDown();
+            this.nudDutyRight = new System.Windows.Forms.NumericUpDown();
+            this.lPWMfreq = new System.Windows.Forms.Label();
+            this.lDutyLeft = new System.Windows.Forms.Label();
+            this.lDutyRight = new System.Windows.Forms.Label();
+            this.btnUpdate = new System.Windows.Forms.Button();
             this.btnWSSend = new System.Windows.Forms.Button();
             this.tbWSSend = new System.Windows.Forms.TextBox();
             this.labelWSAddress = new System.Windows.Forms.Label();
@@ -61,6 +68,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.pbCameraView)).BeginInit();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPWMfreq)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDutyLeft)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDutyRight)).BeginInit();
             this.pSerial.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -139,32 +149,32 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(194, 84);
+            this.panel2.Size = new System.Drawing.Size(194, 77);
             this.panel2.TabIndex = 10;
             // 
             // btnConnect
             // 
-            this.btnConnect.Location = new System.Drawing.Point(116, 54);
+            this.btnConnect.Location = new System.Drawing.Point(116, 49);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(75, 23);
-            this.btnConnect.TabIndex = 0;
+            this.btnConnect.TabIndex = 1;
             this.btnConnect.Text = "Connect";
             this.btnConnect.UseVisualStyleBackColor = true;
             this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
             // 
             // tbCamAddress
             // 
-            this.tbCamAddress.Location = new System.Drawing.Point(3, 28);
+            this.tbCamAddress.Location = new System.Drawing.Point(3, 23);
             this.tbCamAddress.Name = "tbCamAddress";
             this.tbCamAddress.Size = new System.Drawing.Size(188, 20);
-            this.tbCamAddress.TabIndex = 2;
+            this.tbCamAddress.TabIndex = 0;
             this.tbCamAddress.Enter += new System.EventHandler(this.tb_Enter_removeKeyListeners);
             this.tbCamAddress.Leave += new System.EventHandler(this.tb_Leave_addKeyListeners);
             // 
             // labelCamAddress
             // 
             this.labelCamAddress.AutoSize = true;
-            this.labelCamAddress.Location = new System.Drawing.Point(0, 12);
+            this.labelCamAddress.Location = new System.Drawing.Point(3, 7);
             this.labelCamAddress.Name = "labelCamAddress";
             this.labelCamAddress.Size = new System.Drawing.Size(68, 13);
             this.labelCamAddress.TabIndex = 3;
@@ -172,24 +182,119 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.nudPWMfreq);
+            this.panel1.Controls.Add(this.nudDutyLeft);
+            this.panel1.Controls.Add(this.nudDutyRight);
+            this.panel1.Controls.Add(this.lPWMfreq);
+            this.panel1.Controls.Add(this.lDutyLeft);
+            this.panel1.Controls.Add(this.lDutyRight);
+            this.panel1.Controls.Add(this.btnUpdate);
             this.panel1.Controls.Add(this.btnWSSend);
             this.panel1.Controls.Add(this.tbWSSend);
             this.panel1.Controls.Add(this.labelWSAddress);
             this.panel1.Controls.Add(this.labelWSSend);
             this.panel1.Controls.Add(this.tbWSAddress);
             this.panel1.Controls.Add(this.btnWSConnect);
-            this.panel1.Location = new System.Drawing.Point(0, 83);
+            this.panel1.Location = new System.Drawing.Point(0, 74);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(194, 150);
+            this.panel1.Size = new System.Drawing.Size(194, 249);
             this.panel1.TabIndex = 16;
+            // 
+            // nudPWMfreq
+            // 
+            this.nudPWMfreq.Increment = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            this.nudPWMfreq.Location = new System.Drawing.Point(71, 144);
+            this.nudPWMfreq.Maximum = new decimal(new int[] {
+            40000,
+            0,
+            0,
+            0});
+            this.nudPWMfreq.Minimum = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            this.nudPWMfreq.Name = "nudPWMfreq";
+            this.nudPWMfreq.Size = new System.Drawing.Size(120, 20);
+            this.nudPWMfreq.TabIndex = 6;
+            this.nudPWMfreq.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // nudDutyLeft
+            // 
+            this.nudDutyLeft.Location = new System.Drawing.Point(71, 170);
+            this.nudDutyLeft.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+            this.nudDutyLeft.Name = "nudDutyLeft";
+            this.nudDutyLeft.Size = new System.Drawing.Size(120, 20);
+            this.nudDutyLeft.TabIndex = 7;
+            // 
+            // nudDutyRight
+            // 
+            this.nudDutyRight.Location = new System.Drawing.Point(71, 196);
+            this.nudDutyRight.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+            this.nudDutyRight.Name = "nudDutyRight";
+            this.nudDutyRight.Size = new System.Drawing.Size(120, 20);
+            this.nudDutyRight.TabIndex = 8;
+            // 
+            // lPWMfreq
+            // 
+            this.lPWMfreq.AutoSize = true;
+            this.lPWMfreq.Location = new System.Drawing.Point(3, 146);
+            this.lPWMfreq.Name = "lPWMfreq";
+            this.lPWMfreq.Size = new System.Drawing.Size(58, 13);
+            this.lPWMfreq.TabIndex = 2;
+            this.lPWMfreq.Text = "PWM freq:";
+            // 
+            // lDutyLeft
+            // 
+            this.lDutyLeft.AutoSize = true;
+            this.lDutyLeft.Location = new System.Drawing.Point(3, 172);
+            this.lDutyLeft.Name = "lDutyLeft";
+            this.lDutyLeft.Size = new System.Drawing.Size(53, 13);
+            this.lDutyLeft.TabIndex = 3;
+            this.lDutyLeft.Text = "Duty Left:";
+            // 
+            // lDutyRight
+            // 
+            this.lDutyRight.AutoSize = true;
+            this.lDutyRight.Location = new System.Drawing.Point(3, 198);
+            this.lDutyRight.Name = "lDutyRight";
+            this.lDutyRight.Size = new System.Drawing.Size(60, 13);
+            this.lDutyRight.TabIndex = 4;
+            this.lDutyRight.Text = "Duty Right:";
+            // 
+            // btnUpdate
+            // 
+            this.btnUpdate.Location = new System.Drawing.Point(116, 221);
+            this.btnUpdate.Name = "btnUpdate";
+            this.btnUpdate.Size = new System.Drawing.Size(75, 23);
+            this.btnUpdate.TabIndex = 9;
+            this.btnUpdate.Text = "Update";
+            this.btnUpdate.UseVisualStyleBackColor = true;
+            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
             // 
             // btnWSSend
             // 
             this.btnWSSend.Enabled = false;
-            this.btnWSSend.Location = new System.Drawing.Point(116, 121);
+            this.btnWSSend.Location = new System.Drawing.Point(116, 114);
             this.btnWSSend.Name = "btnWSSend";
             this.btnWSSend.Size = new System.Drawing.Size(75, 23);
-            this.btnWSSend.TabIndex = 9;
+            this.btnWSSend.TabIndex = 5;
             this.btnWSSend.Text = "Send";
             this.btnWSSend.UseVisualStyleBackColor = true;
             this.btnWSSend.Click += new System.EventHandler(this.btnWSSend_Click);
@@ -197,17 +302,17 @@
             // tbWSSend
             // 
             this.tbWSSend.Enabled = false;
-            this.tbWSSend.Location = new System.Drawing.Point(3, 95);
+            this.tbWSSend.Location = new System.Drawing.Point(3, 88);
             this.tbWSSend.Name = "tbWSSend";
             this.tbWSSend.Size = new System.Drawing.Size(188, 20);
-            this.tbWSSend.TabIndex = 8;
+            this.tbWSSend.TabIndex = 4;
             this.tbWSSend.Enter += new System.EventHandler(this.tb_Enter_removeKeyListeners);
             this.tbWSSend.Leave += new System.EventHandler(this.tb_Leave_addKeyListeners);
             // 
             // labelWSAddress
             // 
             this.labelWSAddress.AutoSize = true;
-            this.labelWSAddress.Location = new System.Drawing.Point(0, 4);
+            this.labelWSAddress.Location = new System.Drawing.Point(3, 4);
             this.labelWSAddress.Name = "labelWSAddress";
             this.labelWSAddress.Size = new System.Drawing.Size(95, 13);
             this.labelWSAddress.TabIndex = 6;
@@ -216,7 +321,7 @@
             // labelWSSend
             // 
             this.labelWSSend.AutoSize = true;
-            this.labelWSSend.Location = new System.Drawing.Point(3, 79);
+            this.labelWSSend.Location = new System.Drawing.Point(2, 72);
             this.labelWSSend.Name = "labelWSSend";
             this.labelWSSend.Size = new System.Drawing.Size(140, 13);
             this.labelWSSend.TabIndex = 7;
@@ -227,7 +332,7 @@
             this.tbWSAddress.Location = new System.Drawing.Point(3, 20);
             this.tbWSAddress.Name = "tbWSAddress";
             this.tbWSAddress.Size = new System.Drawing.Size(188, 20);
-            this.tbWSAddress.TabIndex = 4;
+            this.tbWSAddress.TabIndex = 2;
             this.tbWSAddress.Text = "ws://";
             this.tbWSAddress.Enter += new System.EventHandler(this.tb_Enter_removeKeyListeners);
             this.tbWSAddress.Leave += new System.EventHandler(this.tb_Leave_addKeyListeners);
@@ -237,7 +342,7 @@
             this.btnWSConnect.Location = new System.Drawing.Point(116, 46);
             this.btnWSConnect.Name = "btnWSConnect";
             this.btnWSConnect.Size = new System.Drawing.Size(75, 23);
-            this.btnWSConnect.TabIndex = 5;
+            this.btnWSConnect.TabIndex = 3;
             this.btnWSConnect.Text = "Connect";
             this.btnWSConnect.UseVisualStyleBackColor = true;
             this.btnWSConnect.Click += new System.EventHandler(this.btnWSConnect_Click);
@@ -253,7 +358,7 @@
             this.pSerial.Controls.Add(this.labelSerialSend);
             this.pSerial.Controls.Add(this.btnSerialSend);
             this.pSerial.Controls.Add(this.tbSerialSend);
-            this.pSerial.Location = new System.Drawing.Point(0, 233);
+            this.pSerial.Location = new System.Drawing.Point(0, 323);
             this.pSerial.Name = "pSerial";
             this.pSerial.Size = new System.Drawing.Size(194, 125);
             this.pSerial.TabIndex = 16;
@@ -273,7 +378,7 @@
             this.tbCOMport.Location = new System.Drawing.Point(3, 19);
             this.tbCOMport.Name = "tbCOMport";
             this.tbCOMport.Size = new System.Drawing.Size(107, 20);
-            this.tbCOMport.TabIndex = 15;
+            this.tbCOMport.TabIndex = 11;
             this.tbCOMport.Enter += new System.EventHandler(this.tb_Enter_removeKeyListeners);
             this.tbCOMport.Leave += new System.EventHandler(this.tb_Leave_addKeyListeners);
             // 
@@ -301,7 +406,7 @@
             this.btnSerialSend.Location = new System.Drawing.Point(116, 91);
             this.btnSerialSend.Name = "btnSerialSend";
             this.btnSerialSend.Size = new System.Drawing.Size(75, 23);
-            this.btnSerialSend.TabIndex = 13;
+            this.btnSerialSend.TabIndex = 14;
             this.btnSerialSend.Text = "Send";
             this.btnSerialSend.UseVisualStyleBackColor = true;
             this.btnSerialSend.Click += new System.EventHandler(this.btnSerialSend_Click);
@@ -312,7 +417,7 @@
             this.tbSerialSend.Location = new System.Drawing.Point(5, 68);
             this.tbSerialSend.Name = "tbSerialSend";
             this.tbSerialSend.Size = new System.Drawing.Size(186, 20);
-            this.tbSerialSend.TabIndex = 14;
+            this.tbSerialSend.TabIndex = 13;
             this.tbSerialSend.Enter += new System.EventHandler(this.tb_Enter_removeKeyListeners);
             this.tbSerialSend.Leave += new System.EventHandler(this.tb_Leave_addKeyListeners);
             // 
@@ -342,6 +447,9 @@
             this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPWMfreq)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDutyLeft)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDutyRight)).EndInit();
             this.pSerial.ResumeLayout(false);
             this.pSerial.PerformLayout();
             this.ResumeLayout(false);
@@ -371,6 +479,13 @@
         private System.Windows.Forms.TextBox tbCOMport;
         private System.Windows.Forms.Button btnSerialSend;
         private System.Windows.Forms.TextBox tbSerialSend;
+        private System.Windows.Forms.NumericUpDown nudPWMfreq;
+        private System.Windows.Forms.NumericUpDown nudDutyLeft;
+        private System.Windows.Forms.NumericUpDown nudDutyRight;
+        private System.Windows.Forms.Label lPWMfreq;
+        private System.Windows.Forms.Label lDutyLeft;
+        private System.Windows.Forms.Label lDutyRight;
+        private System.Windows.Forms.Button btnUpdate;
     }
 }
 

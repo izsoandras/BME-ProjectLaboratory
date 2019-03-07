@@ -13,9 +13,9 @@ Motor MR(0x30, _MOTOR_B, 1000);
 String serialString;
 char * serialdata;
 int length;
-int speedL;
-int speedR;
-int freq;
+int speedL = 40;
+int speedR = 40;
+int freq = 1000;
 bool ledOn = false;
 
 void setup() {
@@ -84,11 +84,11 @@ void loop() {
 			MR.setfreq(freq);
 		} else if(serialString == "?")
 		{
-			Serial.print("Motor speed: ");
+			Serial.print("S:");
 			Serial.print(speedL);
 			Serial.print(",");
 			Serial.println(speedR);
-			Serial.print("PWM frequency: ");
+			Serial.print("P:");
 			Serial.println(freq);
 		}
 		

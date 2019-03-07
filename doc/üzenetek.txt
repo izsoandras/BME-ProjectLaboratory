@@ -1,6 +1,6 @@
 Protokolok:
 	WebSocket: 	KEZELŐ:
-					Billentyűzet: KB:GOMB,IRÁNY\n
+					Billentyűzet: KB:<GOMB>,<IRÁNY>
 						KB:W,U
 							,D
 						   A,U
@@ -11,6 +11,9 @@ Protokolok:
 						     D
 					JoyStick:
 						JS:
+				Soros portra kiírni: SR:<üzenet>
 	Serial:		TÍPUS:ÉRTÉK1[,ÉRTÉK2]
-					Sebesség: S:MOTOR1,MOTOR2\n (MOTOR1,MOTOR2 € [-100,100])
-					PWM: P:FREQ\n
+					Sebesség: S:<MOTOR1>,<MOTOR2>\n (MOTOR1,MOTOR2 € [-100,100])
+					PWM frekvencia: P:<FREQ>\n
+					Lekérdezés: ?:
+							Válasz ugyan olyan formátumban mint az üzenet

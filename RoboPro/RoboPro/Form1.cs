@@ -98,6 +98,18 @@ namespace RoboPro
                 tbConsole.AppendText(msg + "\n");
             }
         }
+
+        private void SendWSmessage(string msg)
+        {
+            if (ws != null)
+            {
+                //Sends the message
+                ws.Send(msg);
+                //Logs the event.
+                logger.LogMsg("WebSocket message sent: " + msg);
+            }
+        }
+
         /// <summary>
         /// Handles the Click event of the btnConnect control.
         /// Starts the video stream and changes the button's behaviour to disconnect.
@@ -267,20 +279,14 @@ namespace RoboPro
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnWSSend_Click(object sender, EventArgs e)
         {
-            //Sends the message
-            ws.Send(tbWSSend.Text);
-            //Logs the event.
-            logger.LogMsg("WebSocket message sent: " + tbWSSend.Text);
+            //Send the message
+            SendWSmessage(tbWSSend.Text);
         }
 
         private void HandleKey_WS(char key, char dir)
         {
-            if (ws != null)
-            {
-                string msg = $"KB:{key},{dir}";
-                ws.Send(msg);
-                logger.LogMsg("WebSocket message sent: " + msg);
-            }
+            //Send the message
+            SendWSmessage($"KB:{key},{dir}");
         }
         
         /// <summary>
@@ -317,6 +323,18 @@ namespace RoboPro
                 keyStates[(int)MyKeys.Dkey] = true;
                 if (HandledKeyEvent != null)
                     HandledKeyEvent('D', 'D');
+            }
+            else if (e.KeyCode == Keys.Add)
+            {
+                logger.LogMsg("Key down: +");
+                if (HandledKeyEvent != null)
+                    HandledKeyEvent('+', 'D');
+            }
+            else if (e.KeyCode == Keys.Subtract)
+            {
+                logger.LogMsg("Key down: -");
+                if (HandledKeyEvent != null)
+                    HandledKeyEvent('-', 'D');
             }
         }
         /// <summary>
@@ -475,6 +493,16 @@ namespace RoboPro
         {
             KeyDown += robotClientForm_KeyDown;
             KeyUp += robotClientForm_KeyUp;
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            //Turn off the motors
+            SendWSmessage("SR:S:0,0");
+            //Set the pwm
+            SendWSmessage($"SR:P:{nudPWMfreq.Value}");
+            //Set the speed
+            SendWSmessage($"SR:S:{nudDutyLeft.Value},{nudDutyRight.Value}");
         }
     }
 }

@@ -11,8 +11,13 @@ ser = serial.Serial(
     baudrate = 115200
     )
 buttons = [False, False, False, False]
+index = 0
 accel = 0
 steer = 0
+
+pwm = 1000
+leftMotor = 40
+rightMotor = 40
  
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
@@ -25,10 +30,14 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         cmdtype = message[:message.find(":")]
         params = message[message.find(":")+1:]
         params = params.split(",")
-        
-        #Determining the type of the message
+        print ("Command: " + cmdtype)
+        # Determining the type of the message
         if cmdtype == "KB":
-            #Determining the direction
+            global index
+            global pwm
+            global leftMotor
+            global rightMotor
+            # Determining the direction
             if params[0] == "W":
                 index = 0
             elif params[0] == "A":
@@ -37,14 +46,63 @@ class WSHandler(tornado.websocket.WebSocketHandler):
                 index = 2
             elif params[0] == "D":
                 index = 3
+            elif params[0] == "+":
+                ser.write(str.encode("?:"))
+                instr = ser.readline().decode()
+                leftMotor = int(instr[instr.find(":")+1:instr.find(",")])
+                rightMotor = int(instr[instr.find(",")+1:])
+                instr = ser.readline().decode()
+                pwm = int(instr[instr.find(":") + 1:instr.find(",")])
+
+                if leftMotor > 9:
+                    leftMotor += 10
+                    if leftMotor > 100:
+                        leftMotor = 100
+                else:
+                    leftMotor += 1
+
+                if rightMotor > 9:
+                    rightMotor += 10
+                    if rightMotor > 100:
+                        rightMotor = 100
+                else:
+                    rightMotor += 1
+            elif params[0] == "-":
+                ser.write(str.encode("?:"))
+                instr = ser.readline().decode()
+                leftMotor = int(instr[instr.find(":")+1:instr.find(",")])
+                rightMotor = int(instr[instr.find(",")+1:])
+                instr = ser.readline().decode()
+                pwm = int(instr[instr.find(":") + 1:instr.find(",")])
+
+                if leftMotor >10:
+                    leftMotor -= 10
+                    if leftMotor < 10:
+                        leftMotor = 10
+                else:
+                    leftMotor -= 1
+                    if leftMotor < 0:
+                        leftMotor = 0
+
+                if rightMotor >10:
+                    rightMotor -= 10
+                    if rightMotor < 10:
+                        rightMotor = 10
+                else:
+                    rightMotor -= 1
+                    if rightMotor < 0:
+                        rightMotor = 0
             else:
                 self.write_message("Unknown 1st parameter")
                 return
 
+
             #Determining the value
+
             if params[1] == "D":
                 buttons[index] = True
             elif params[1] == "U":
+
                 buttons[index] = False
             else:
                 self.write_message("Unknown 2nd parameter")
@@ -67,16 +125,22 @@ class WSHandler(tornado.websocket.WebSocketHandler):
                 steer = -1
 
             if accel == 0:
-                msg = "{leftEngine},{rightEngine}\n".format(leftEngine = -30*steer, rightEngine = 30*steer)
+                msg = "S:{leftEngine},{rightEngine}\n".format(leftEngine = -leftMotor*steer, rightEngine = rightMotor*steer)
                 ser.write(str.encode(msg))
                 self.write_message("Serial write: " + msg)
             else:
-                msg = "{leftEngine},{rightEngine}\n".format(leftEngine = accel*(30-5*steer), rightEngine = accel*(30+5*steer))
+                msg = "S:{leftEngine},{rightEngine}\n".format(leftEngine = accel*(leftMotor-leftMotor/6*steer), rightEngine = accel*(rightMotor+rightMotor/6*steer))
                 ser.write(str.encode(msg))
                 self.write_message("Serial write: " + msg)
 
             print(ser.readline())
-            
+
+        #command sent right to the motor controller
+        elif cmdtype == "SR":
+            msg = message[message.find(":")+1:] + "\n"
+            ser.write(str.encode(msg))
+            self.write_message("Serial write: " + msg)
+        #command that we can not recognize
         else:
             self.write_message("Unknown command type")
 
