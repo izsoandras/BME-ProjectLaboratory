@@ -19,18 +19,23 @@ class MyMotor(object):
 
     @pwm.setter
     def pwm(self, pwm):
-        self.pwm = pwm
-        self.ser.write(str.encode("P:{}\n".format(pwm)))
+        self._pwm = pwm
+        self.ser.write(str.encode("P:{}\n".format(self._pwm)))
 
     @property
-    def speed(self):
+    def baseSpeed(self):
         return self._baseSpeed
 
-    @speed.setter
-    def speed(self, speed):
+    @baseSpeed.setter
+    def baseSpeed(self, speed):
         self._baseSpeed = speed
         if self.isGoing():
             self._updateSpeed()
+
+    def directSpeed(self, left, right):
+        self._rightCurrSpeed = right
+        self._leftCurrSpeed =left
+        self.ser.write(str.encode("S:{0},{1}\n".format(self._leftCurrSpeed, self._rightCurrSpeed)))
 
     def _updateSpeed(self):
         self._rightCurrSpeed = self._dirR * self._baseSpeed * (2 - self._turnRatio)
@@ -53,8 +58,9 @@ class MyMotor(object):
         self._updateSpeed()
 
     def stop(self):
-        self._leftCurrSpeed = 0
-        self._rightCurrSpeed = 0
+        self._dirL = 0
+        self._dirR = 0
+        self._updateSpeed()
 
     def rotateLeft(self):
         self._dirL = -1
@@ -80,6 +86,8 @@ class MyMotor(object):
         if 0 < turnRatio < 2:
             self._turnRatio = turnRatio
             self._updateSpeed()
+        else:
+            raise ValueError("Argument must be between 0 and 2")
 
     def incrementSpeed(self):
         if self._baseSpeed > 9:
@@ -88,6 +96,8 @@ class MyMotor(object):
                 self._baseSpeed = 100
         else:
             self._baseSpeed += 1
+
+        self._updateSpeed()
 
     def decrementSpeed(self):
         if self._baseSpeed > 10:
@@ -98,6 +108,8 @@ class MyMotor(object):
             self._baseSpeed -= 1
             if self._baseSpeed < 0:
                 self._baseSpeed = 0
+
+        self._updateSpeed()
 
     def getStatus(self):
         return {"PWM": self.pwm, "BaseSpeed": self._baseSpeed, "LeftSpeed": self._leftCurrSpeed, "RightSpeed": self._rightCurrSpeed, "TurnRatio": self._turnRatio}
