@@ -459,12 +459,12 @@ namespace RoboPro
                 string msg;
                 if (accel == 0)
                 {
-                    msg = $"S:{-30 * steer},{30 * steer}";
+                    msg = $"S:{-40 * steer},{40 * steer}";
                     port.WriteLine(msg);
                 }
                 else
                 {
-                    msg = $"S:{accel * (30 - 5 * steer)},{accel * (30 + 5 * steer)}";
+                    msg = $"S:{accel * (40 - 5 * steer)},{accel * (40 + 5 * steer)}";
                     port.WriteLine(msg);
                 }
                 logger.LogMsg("Serial message sent: " + msg);

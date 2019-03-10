@@ -13,19 +13,19 @@ Motor MR(0x30, _MOTOR_B, 1000);
 String serialString;
 char * serialdata;
 int length;
-int speedL = 40;
-int speedR = 40;
-int freq = 1000;
+int speedL = 0;
+int speedR = 0;
+int freq = 100;
 bool ledOn = false;
 
 void setup() {
 	Serial.begin(115200);
-	pinMode(BUILTIN_LED, OUTPUT);
+	pinMode(LED_BUILTIN, OUTPUT);
 	MR.setmotor(_STOP);
 	ML.setmotor(_STOP);
-	digitalWrite(BUILTIN_LED, HIGH);
+	digitalWrite(LED_BUILTIN, HIGH);
 	delay(100);
-	digitalWrite(BUILTIN_LED, LOW);
+	digitalWrite(LED_BUILTIN, LOW);
 	Serial.println("Setup ready");
 }
 
@@ -47,14 +47,14 @@ void loop() {
 			speedR = min(serialString.toInt(), 100);
 			ledOn = !ledOn;
 
-			Serial.print("Setting motor to: ");
+			Serial.print("S:");
 			Serial.print(speedL);
 			Serial.print(",");
 			Serial.println(speedR);
 
 			if (speedL == 0)
 			{
-				ML.setmotor(_STOP);
+				ML.setmotor(_SHORT_BRAKE);
 			}
 			else if (speedL > 0) {
 				ML.setmotor(_CCW, speedL);
@@ -66,7 +66,7 @@ void loop() {
 
 			if (speedR == 0)
 			{
-				MR.setmotor(_STOP);
+				MR.setmotor(_SHORT_BRAKE);
 			}
 			else if (speedR > 0) {
 				MR.setmotor(_CW, speedR);
@@ -78,7 +78,7 @@ void loop() {
 		} else if(serialString == "P"){
 			serialString = Serial.readStringUntil('\n');
 			freq = serialString.toInt();
-			Serial.print("Setting PWM frequency to: ");
+			Serial.print("P:");
 			Serial.println(freq);
 			ML.setfreq(freq);
 			MR.setfreq(freq);
@@ -90,6 +90,15 @@ void loop() {
 			Serial.println(speedR);
 			Serial.print("P:");
 			Serial.println(freq);
+			Serial.print("L:");
+			Serial.println(ledOn ? "1" : "0");
+		} else if(serialString == "L")
+		{
+			serialString = Serial.readStringUntil('\n');
+			ledOn = serialString.toInt() > 0;
+			Serial.print("L:");
+			Serial.println(ledOn ? "1" : "0");
+			digitalWrite(LED_BUILTIN, ledOn ? LOW : HIGH);
 		}
 		
 
