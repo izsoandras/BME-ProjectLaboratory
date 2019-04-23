@@ -17,7 +17,7 @@ namespace RoboPro.Utils
     /// <summary>
     /// The logger class. This class is responsible for logging the messages to all the different destinations.
     /// </summary>
-    class Logger
+    public class Logger
     {
         /// <summary>
         /// Log destinations have to subscribe for this event.

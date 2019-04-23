@@ -6,6 +6,6 @@ ser = serial.Serial(
     baudrate = 115200
     )
 while True:
-    ser.write(str.encode("30,30\n"))
-    ser.write(str.encode("60,60\n"))
+    ser.write(str.encode("S:30,30\n"))
+    ser.write(str.encode("S:60,60\n"))
     print(ser.readline())

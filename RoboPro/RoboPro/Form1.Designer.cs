@@ -28,12 +28,29 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title3 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(robotClientForm));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.tabViews = new System.Windows.Forms.TabControl();
+            this.tabCameraView = new System.Windows.Forms.TabPage();
             this.pbCameraView = new System.Windows.Forms.PictureBox();
+            this.tabSensors = new System.Windows.Forms.TabPage();
+            this.chartPress = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chartHumid = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chartTemp = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tbConsole = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.btnConnect = new System.Windows.Forms.Button();
+            this.btnStreamConnect = new System.Windows.Forms.Button();
             this.tbCamAddress = new System.Windows.Forms.TextBox();
             this.labelCamAddress = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -57,6 +74,8 @@
             this.labelSerialSend = new System.Windows.Forms.Label();
             this.btnSerialSend = new System.Windows.Forms.Button();
             this.tbSerialSend = new System.Windows.Forms.TextBox();
+            this.timerSensor = new System.Windows.Forms.Timer(this.components);
+            this.compass = new RoboPro.Compass();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -65,7 +84,13 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            this.tabViews.SuspendLayout();
+            this.tabCameraView.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbCameraView)).BeginInit();
+            this.tabSensors.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartPress)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartHumid)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartTemp)).BeginInit();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPWMfreq)).BeginInit();
@@ -106,7 +131,7 @@
             // 
             // splitContainer2.Panel1
             // 
-            this.splitContainer2.Panel1.Controls.Add(this.pbCameraView);
+            this.splitContainer2.Panel1.Controls.Add(this.tabViews);
             // 
             // splitContainer2.Panel2
             // 
@@ -115,18 +140,128 @@
             this.splitContainer2.SplitterDistance = 319;
             this.splitContainer2.TabIndex = 1;
             // 
+            // tabViews
+            // 
+            this.tabViews.Controls.Add(this.tabCameraView);
+            this.tabViews.Controls.Add(this.tabSensors);
+            this.tabViews.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabViews.Location = new System.Drawing.Point(0, 0);
+            this.tabViews.Name = "tabViews";
+            this.tabViews.SelectedIndex = 0;
+            this.tabViews.Size = new System.Drawing.Size(594, 315);
+            this.tabViews.TabIndex = 0;
+            this.tabViews.SelectedIndexChanged += new System.EventHandler(this.tabViews_SelectedIndexChanged);
+            // 
+            // tabCameraView
+            // 
+            this.tabCameraView.Controls.Add(this.pbCameraView);
+            this.tabCameraView.Location = new System.Drawing.Point(4, 22);
+            this.tabCameraView.Name = "tabCameraView";
+            this.tabCameraView.Padding = new System.Windows.Forms.Padding(3);
+            this.tabCameraView.Size = new System.Drawing.Size(586, 289);
+            this.tabCameraView.TabIndex = 0;
+            this.tabCameraView.Text = "Camera";
+            this.tabCameraView.UseVisualStyleBackColor = true;
+            // 
             // pbCameraView
             // 
-            this.pbCameraView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.pbCameraView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pbCameraView.Location = new System.Drawing.Point(12, 12);
+            this.pbCameraView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pbCameraView.Location = new System.Drawing.Point(3, 3);
             this.pbCameraView.Name = "pbCameraView";
-            this.pbCameraView.Size = new System.Drawing.Size(579, 300);
+            this.pbCameraView.Size = new System.Drawing.Size(580, 283);
             this.pbCameraView.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbCameraView.TabIndex = 1;
             this.pbCameraView.TabStop = false;
+            // 
+            // tabSensors
+            // 
+            this.tabSensors.Controls.Add(this.chartPress);
+            this.tabSensors.Controls.Add(this.chartHumid);
+            this.tabSensors.Controls.Add(this.chartTemp);
+            this.tabSensors.Controls.Add(this.compass);
+            this.tabSensors.Location = new System.Drawing.Point(4, 22);
+            this.tabSensors.Name = "tabSensors";
+            this.tabSensors.Padding = new System.Windows.Forms.Padding(3);
+            this.tabSensors.Size = new System.Drawing.Size(586, 289);
+            this.tabSensors.TabIndex = 1;
+            this.tabSensors.Text = "Sensors";
+            this.tabSensors.UseVisualStyleBackColor = true;
+            // 
+            // chartPress
+            // 
+            chartArea1.AxisX.LabelStyle.Enabled = false;
+            chartArea1.AxisX.Maximum = 4D;
+            chartArea1.AxisX.Minimum = 0D;
+            chartArea1.Name = "ChartArea1";
+            this.chartPress.ChartAreas.Add(chartArea1);
+            this.chartPress.Location = new System.Drawing.Point(300, 153);
+            this.chartPress.Name = "chartPress";
+            this.chartPress.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.SeaGreen;
+            series1.BorderWidth = 3;
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series1.Color = System.Drawing.Color.Aqua;
+            series1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            series1.IsVisibleInLegend = false;
+            series1.Name = "Press";
+            this.chartPress.Series.Add(series1);
+            this.chartPress.Size = new System.Drawing.Size(286, 137);
+            this.chartPress.TabIndex = 3;
+            this.chartPress.Text = "chart3";
+            title1.Name = "Title1";
+            title1.Text = "Pressure";
+            this.chartPress.Titles.Add(title1);
+            // 
+            // chartHumid
+            // 
+            this.chartHumid.BorderlineColor = System.Drawing.Color.Transparent;
+            chartArea2.AxisX.LabelStyle.Enabled = false;
+            chartArea2.AxisX.Maximum = 4D;
+            chartArea2.AxisX.Minimum = 0D;
+            chartArea2.Name = "ChartArea1";
+            this.chartHumid.ChartAreas.Add(chartArea2);
+            this.chartHumid.Location = new System.Drawing.Point(0, 140);
+            this.chartHumid.Name = "chartHumid";
+            this.chartHumid.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.SeaGreen;
+            series2.BorderWidth = 3;
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series2.Color = System.Drawing.Color.Blue;
+            series2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            series2.IsVisibleInLegend = false;
+            series2.Name = "Humid";
+            this.chartHumid.Series.Add(series2);
+            this.chartHumid.Size = new System.Drawing.Size(294, 149);
+            this.chartHumid.TabIndex = 2;
+            this.chartHumid.Text = "chart2";
+            title2.Name = "Title1";
+            title2.Text = "Humidity";
+            this.chartHumid.Titles.Add(title2);
+            // 
+            // chartTemp
+            // 
+            chartArea3.AlignmentOrientation = ((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations)((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Vertical | System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Horizontal)));
+            chartArea3.AxisX.LabelStyle.Enabled = false;
+            chartArea3.AxisX.Maximum = 4D;
+            chartArea3.AxisX.Minimum = 0D;
+            chartArea3.Name = "ChartArea1";
+            this.chartTemp.ChartAreas.Add(chartArea3);
+            this.chartTemp.Location = new System.Drawing.Point(-1, 0);
+            this.chartTemp.Name = "chartTemp";
+            this.chartTemp.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
+            series3.BorderWidth = 3;
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series3.Color = System.Drawing.Color.Red;
+            series3.Name = "Temp";
+            this.chartTemp.Series.Add(series3);
+            this.chartTemp.Size = new System.Drawing.Size(295, 146);
+            this.chartTemp.TabIndex = 1;
+            this.chartTemp.Text = "chart1";
+            title3.Name = "Title1";
+            title3.Text = "Temperature";
+            this.chartTemp.Titles.Add(title3);
             // 
             // tbConsole
             // 
@@ -143,7 +278,7 @@
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.btnConnect);
+            this.panel2.Controls.Add(this.btnStreamConnect);
             this.panel2.Controls.Add(this.tbCamAddress);
             this.panel2.Controls.Add(this.labelCamAddress);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
@@ -152,15 +287,15 @@
             this.panel2.Size = new System.Drawing.Size(194, 77);
             this.panel2.TabIndex = 10;
             // 
-            // btnConnect
+            // btnStreamConnect
             // 
-            this.btnConnect.Location = new System.Drawing.Point(116, 49);
-            this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(75, 23);
-            this.btnConnect.TabIndex = 1;
-            this.btnConnect.Text = "Connect";
-            this.btnConnect.UseVisualStyleBackColor = true;
-            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            this.btnStreamConnect.Location = new System.Drawing.Point(116, 49);
+            this.btnStreamConnect.Name = "btnStreamConnect";
+            this.btnStreamConnect.Size = new System.Drawing.Size(75, 23);
+            this.btnStreamConnect.TabIndex = 1;
+            this.btnStreamConnect.Text = "Connect";
+            this.btnStreamConnect.UseVisualStyleBackColor = true;
+            this.btnStreamConnect.Click += new System.EventHandler(this.btnStreamConnect_Click);
             // 
             // tbCamAddress
             // 
@@ -421,6 +556,19 @@
             this.tbSerialSend.Enter += new System.EventHandler(this.tb_Enter_removeKeyListeners);
             this.tbSerialSend.Leave += new System.EventHandler(this.tb_Leave_addKeyListeners);
             // 
+            // timerSensor
+            // 
+            this.timerSensor.Interval = 1000;
+            this.timerSensor.Tick += new System.EventHandler(this.timerSensor_Tick);
+            // 
+            // compass
+            // 
+            this.compass.Heading = ((System.Drawing.PointF)(resources.GetObject("compass.Heading")));
+            this.compass.Location = new System.Drawing.Point(379, 0);
+            this.compass.Name = "compass";
+            this.compass.Size = new System.Drawing.Size(150, 150);
+            this.compass.TabIndex = 0;
+            // 
             // robotClientForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -442,7 +590,13 @@
             this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.tabViews.ResumeLayout(false);
+            this.tabCameraView.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbCameraView)).EndInit();
+            this.tabSensors.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chartPress)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartHumid)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartTemp)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -458,7 +612,7 @@
 
         #endregion
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.Button btnConnect;
+        private System.Windows.Forms.Button btnStreamConnect;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.PictureBox pbCameraView;
         private System.Windows.Forms.TextBox tbConsole;
@@ -486,6 +640,14 @@
         private System.Windows.Forms.Label lDutyLeft;
         private System.Windows.Forms.Label lDutyRight;
         private System.Windows.Forms.Button btnUpdate;
+        private System.Windows.Forms.TabControl tabViews;
+        private System.Windows.Forms.TabPage tabCameraView;
+        private System.Windows.Forms.TabPage tabSensors;
+        private Compass compass;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartTemp;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartPress;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartHumid;
+        private System.Windows.Forms.Timer timerSensor;
     }
 }
 

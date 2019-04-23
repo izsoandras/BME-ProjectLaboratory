@@ -9,12 +9,12 @@ import middleware
 import mylogger
 
 ser = serial.Serial(
-    port ="/dev/ttyUSB0",
+    port ="/dev/ttyACM0",
     baudrate = 115200
     )
 
-logger = mylogger.MyLogger( "/dev/ttyUSB0", 115200)
-motor = middleware.MyMotor("/dev/ttyUSB0", 115200, logger)
+logger = mylogger.MyLogger( "/dev/ttyACM0", 115200)
+motor = middleware.MyMotor("/dev/ttyACM0", 115200, logger)
 
 buttons = [False, False, False, False]
 index = 0
@@ -30,6 +30,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         print ("Client connected")
         logger.WSconnections.add(self)
+        self.write_message("Welcome")
 
     def on_message(self, message):
         print ('message received:  %s' % message)
@@ -167,6 +168,8 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
             while ser.in_waiting > 0:
                 print(ser.readline())
+                
+            self.write_message("Done")
 
         # command sent right to the motor controller
         elif cmdtype == "SR":
@@ -177,6 +180,11 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         # command that we can not recognize
         else:
             logger.log("Unknown command type")
+            
+        while ser.in_waiting > 0:
+            msg = ser.readline()
+            print(msg)
+            logger.log("Serial read: " + ser.readline().decode('UTF-8'))
 
     def on_close(self):
         print ("Client left")
@@ -196,6 +204,10 @@ if __name__ == "__main__":
     # ser.write(str.encode('S:40,40'))
     # time.sleep()
     # ser.write(str.encode('S:0,0'))
+    while ser.in_waiting > 0:
+        msg = ser.readline()
+        print(msg)
+        logger.log("Serial read: " + ser.readline())
     
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(8888)

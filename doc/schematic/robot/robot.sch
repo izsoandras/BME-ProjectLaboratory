@@ -1,0 +1,316 @@
+EESchema Schematic File Version 4
+EELAYER 29 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L MCU_Module:Arduino_UNO_R3 A?
+U 1 1 5CBB77F7
+P 8400 3600
+F 0 "A?" H 8400 4781 50  0000 C CNN
+F 1 "Arduino_UNO_R3" H 8400 4690 50  0000 C CNN
+F 2 "Module:Arduino_UNO_R3" H 8550 2550 50  0001 L CNN
+F 3 "https://www.arduino.cc/en/Main/arduinoBoardUno" H 8200 4650 50  0001 C CNN
+	1    8400 3600
+	1    0    0    -1  
+$EndComp
+$Comp
+L robot:BME280breakout U?
+U 1 1 5CBD2A13
+P 10450 2150
+F 0 "U?" H 10508 2275 50  0000 C CNN
+F 1 "BME280breakout" H 10508 2184 50  0000 C CNN
+F 2 "" H 10450 2150 50  0001 C CNN
+F 3 "" H 10450 2150 50  0001 C CNN
+	1    10450 2150
+	1    0    0    -1  
+$EndComp
+$Comp
+L robot:LSM303C_breakout U?
+U 1 1 5CBD3076
+P 10650 3500
+F 0 "U?" H 10625 3625 50  0000 C CNN
+F 1 "LSM303C_breakout" H 10625 3534 50  0000 C CNN
+F 2 "" H 10650 3500 50  0001 C CNN
+F 3 "" H 10650 3500 50  0001 C CNN
+	1    10650 3500
+	1    0    0    -1  
+$EndComp
+$Comp
+L robot:DC-DC_buck U?
+U 1 1 5CBD361D
+P 2450 1600
+F 0 "U?" H 2400 1925 50  0000 C CNN
+F 1 "DC-DC_buck" H 2400 1834 50  0000 C CNN
+F 2 "" H 2350 1800 50  0001 C CNN
+F 3 "" H 2350 1800 50  0001 C CNN
+	1    2450 1600
+	1    0    0    -1  
+$EndComp
+$Comp
+L robot:RPi_3b+ U?
+U 1 1 5CBD38D7
+P 2700 2500
+F 0 "U?" H 2775 2965 50  0000 C CNN
+F 1 "RPi_3b+" H 2775 2874 50  0000 C CNN
+F 2 "" H 2750 1450 50  0001 C CNN
+F 3 "" H 2750 1450 50  0001 C CNN
+	1    2700 2500
+	1    0    0    -1  
+$EndComp
+Text GLabel 3550 2350 2    50   Input ~ 0
+Arduino
+Text GLabel 8300 4700 3    50   Input ~ 0
+Arduino
+Text GLabel 7900 3100 0    50   Input ~ 0
+Arduino
+Text GLabel 7900 3000 0    50   Input ~ 0
+Arduino
+Text GLabel 8600 2600 1    50   Input ~ 0
+Arduino
+$Comp
+L power:+BATT #PWR?
+U 1 1 5CBE5485
+P 650 1500
+F 0 "#PWR?" H 650 1350 50  0001 C CNN
+F 1 "+BATT" H 665 1673 50  0000 C CNN
+F 2 "" H 650 1500 50  0001 C CNN
+F 3 "" H 650 1500 50  0001 C CNN
+	1    650  1500
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:-BATT #PWR?
+U 1 1 5CBE5999
+P 950 1700
+F 0 "#PWR?" H 950 1550 50  0001 C CNN
+F 1 "-BATT" H 950 1850 50  0000 C CNN
+F 2 "" H 950 1700 50  0001 C CNN
+F 3 "" H 950 1700 50  0001 C CNN
+	1    950  1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L robot:L298N_module U?
+U 1 1 5CBE7604
+P 5600 1150
+F 0 "U?" H 5825 1265 50  0000 C CNN
+F 1 "L298N_module" H 5825 1174 50  0000 C CNN
+F 2 "" H 5600 1150 50  0001 C CNN
+F 3 "" H 5600 1150 50  0001 C CNN
+	1    5600 1150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Motor:Motor_DC M?
+U 1 1 5CBE8A46
+P 4650 1350
+F 0 "M?" H 4808 1346 50  0000 L CNN
+F 1 "Motor_DC" H 4808 1255 50  0000 L CNN
+F 2 "" H 4650 1260 50  0001 C CNN
+F 3 "~" H 4650 1260 50  0001 C CNN
+	1    4650 1350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Motor:Motor_DC M?
+U 1 1 5CBE91A7
+P 7000 1450
+F 0 "M?" H 7158 1446 50  0000 L CNN
+F 1 "Motor_DC" H 7158 1355 50  0000 L CNN
+F 2 "" H 7000 1360 50  0001 C CNN
+F 3 "~" H 7000 1360 50  0001 C CNN
+	1    7000 1450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 5CBE94B6
+P 4250 1400
+F 0 "C?" H 4365 1446 50  0000 L CNN
+F 1 "C" H 4365 1355 50  0000 L CNN
+F 2 "" H 4288 1250 50  0001 C CNN
+F 3 "~" H 4250 1400 50  0001 C CNN
+	1    4250 1400
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 5CBE9D6C
+P 6600 1500
+F 0 "C?" H 6715 1546 50  0000 L CNN
+F 1 "C" H 6715 1455 50  0000 L CNN
+F 2 "" H 6638 1350 50  0001 C CNN
+F 3 "~" H 6600 1500 50  0001 C CNN
+	1    6600 1500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2750 1700 2750 1850
+Wire Wire Line
+	2750 1850 1850 1850
+Wire Wire Line
+	1850 1850 1850 2550
+Wire Wire Line
+	1850 2550 2000 2550
+Wire Wire Line
+	2750 1500 2900 1500
+Wire Wire Line
+	2900 1500 2900 1950
+Wire Wire Line
+	2900 1950 1700 1950
+Wire Wire Line
+	1700 5150 2350 5150
+Wire Wire Line
+	2350 5150 2350 5000
+Wire Wire Line
+	8500 2600 8500 2250
+Wire Wire Line
+	8500 2250 9250 2250
+Wire Wire Line
+	9250 2250 9250 3700
+Wire Wire Line
+	9250 3700 10250 3700
+Wire Wire Line
+	8900 4000 9600 4000
+Wire Wire Line
+	9600 2550 9600 4000
+Connection ~ 9600 4000
+Wire Wire Line
+	9600 4000 10250 4000
+Wire Wire Line
+	8900 4100 9350 4100
+Wire Wire Line
+	9950 4100 9950 3900
+Wire Wire Line
+	9950 3900 10250 3900
+Wire Wire Line
+	9350 4100 9350 2450
+Connection ~ 9350 4100
+Wire Wire Line
+	9350 4100 9950 4100
+Wire Wire Line
+	8500 4700 8500 4800
+Wire Wire Line
+	8500 4800 9150 4800
+Wire Wire Line
+	9150 4800 9150 2350
+Wire Wire Line
+	9150 4800 10150 4800
+Wire Wire Line
+	10150 4800 10150 3800
+Wire Wire Line
+	10150 3800 10250 3800
+Connection ~ 9150 4800
+Wire Wire Line
+	6450 1400 6450 1350
+Wire Wire Line
+	6450 1350 6600 1350
+Wire Wire Line
+	6600 1350 6600 1250
+Wire Wire Line
+	6600 1250 7000 1250
+Connection ~ 6600 1350
+Wire Wire Line
+	6450 1500 6450 1650
+Wire Wire Line
+	6450 1650 6600 1650
+Wire Wire Line
+	6600 1650 6600 1750
+Wire Wire Line
+	6600 1750 7000 1750
+Connection ~ 6600 1650
+Wire Wire Line
+	5200 1400 5200 1150
+Wire Wire Line
+	5200 1150 4650 1150
+Wire Wire Line
+	4650 1150 4250 1150
+Wire Wire Line
+	4250 1150 4250 1250
+Connection ~ 4650 1150
+Wire Wire Line
+	5200 1500 5200 1650
+Wire Wire Line
+	5200 1650 4650 1650
+Wire Wire Line
+	4650 1650 4250 1650
+Wire Wire Line
+	4250 1650 4250 1550
+Connection ~ 4650 1650
+Wire Wire Line
+	1700 1950 1700 5150
+Wire Wire Line
+	650  1500 1650 1500
+Wire Wire Line
+	950  1700 1850 1700
+Wire Wire Line
+	9250 2250 10200 2250
+Connection ~ 9250 2250
+Wire Wire Line
+	9150 2350 10200 2350
+Wire Wire Line
+	9350 2450 10200 2450
+Wire Wire Line
+	9600 2550 10200 2550
+Wire Wire Line
+	7900 4000 5800 4000
+Wire Wire Line
+	5800 4000 5800 1900
+Wire Wire Line
+	7900 4100 6300 4100
+Wire Wire Line
+	6300 4100 6300 1900
+Wire Wire Line
+	7900 3800 5900 3800
+Wire Wire Line
+	5900 3800 5900 1900
+Wire Wire Line
+	7900 3900 6000 3900
+Wire Wire Line
+	6000 3900 6000 1900
+Wire Wire Line
+	7900 4200 6100 4200
+Wire Wire Line
+	6100 4200 6100 1900
+Wire Wire Line
+	7900 4300 6200 4300
+Wire Wire Line
+	6200 4300 6200 1900
+Wire Wire Line
+	1650 1500 1650 1050
+Wire Wire Line
+	1650 1050 3700 1050
+Wire Wire Line
+	3700 1050 3700 1950
+Wire Wire Line
+	3700 1950 5350 1950
+Wire Wire Line
+	5350 1950 5350 1900
+Connection ~ 1650 1500
+Wire Wire Line
+	1650 1500 2050 1500
+Wire Wire Line
+	1850 1700 1850 1200
+Wire Wire Line
+	1850 1200 3500 1200
+Wire Wire Line
+	3500 1200 3500 2100
+Wire Wire Line
+	3500 2100 5450 2100
+Wire Wire Line
+	5450 2100 5450 1900
+Connection ~ 1850 1700
+Wire Wire Line
+	1850 1700 2050 1700
+$EndSCHEMATC
