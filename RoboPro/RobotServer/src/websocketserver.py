@@ -22,8 +22,8 @@ accel = 0
 steer = 0
 
 pwm = 1000
-leftMotor = 40
-rightMotor = 40
+leftMotor = 80
+rightMotor = 80
 
 
 class WSHandler(tornado.websocket.WebSocketHandler):

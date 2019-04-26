@@ -7,7 +7,7 @@ class MyMotor(object):
     def __init__(self, serialport, baud=115200, logger = None):
         self.ser = serial.Serial(port=serialport, baudrate=baud)
         self._pwm = 1000
-        self._baseSpeed = 40
+        self._baseSpeed = 80
         self._rightCurrSpeed = 0
         self._leftCurrSpeed = 0
         self._dirL = 1
