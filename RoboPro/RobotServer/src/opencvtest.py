@@ -9,6 +9,7 @@ import middleware as mw
 from pivideostream import PiVideoStream
 from fps import FPS
 
+
 # initialize the camera and grab a reference to the raw camera capture
 #camera = PiCamera()
 #camera.resolution = (320, 240)
@@ -38,28 +39,51 @@ while True:
     # grab the raw NumPy array representing the image, then initialize the timestamp
     # and occupied/unoccupied text
     #image = frame.array
+    timings = {"total_time":time.time()}
+    now_time = time.time()
+    
     image = camera.read()
+    
+    timings["camera.read"] = time.time()-now_time
+    now_time = time.time()
+    
     if posX is not None:
         image = image[max(posY-2*radius, 0):min(posY+2*radius, 240), max(posX-2*radius, 0):min(posX+2*radius, 320)]
 
     #cv2.medianBlur(image, 3, image)
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-
+    
+    timings["cv2.cvtColor"] = time.time()-now_time
+    now_time = time.time()
 
      # hsv = cv2.GaussianBlur(hsv, (9, 9), 2)
 
     mask_lower = cv2.inRange(hsv, lower_lower_red, lower_upper_red)
     mask_upper = cv2.inRange(hsv, upper_lower_red, upper_upper_red)
     
+    timings["2x cv2.inRange"] = time.time()-now_time
+    now_time = time.time()
+
     #mask_red = cv2.inRange(hsv, upper_lower_red, lower_upper_red)
     
     mask_red = cv2.addWeighted(mask_upper, 1, mask_lower, 1, 0)
+    
+    timings["cv2.addWeighted"] = time.time()-now_time
+    now_time = time.time()
+    
     mask_red = cv2.medianBlur(mask_red, 3)
+    
+    timings["cv2.medianBlur"] = time.time()-now_time
+    now_time = time.time()
+    
     #kernel = np.ones((9, 9), np.uint8)
     #mask_red = cv2.morphologyEx(mask_red, cv2.MORPH_OPEN, kernel)
     #mask_red = cv2.morphologyEx(mask_red, cv2.MORPH_CLOSE, kernel)
 
     circles = cv2.HoughCircles(mask_red, cv2.HOUGH_GRADIENT, 1, 20, param1=100, param2=10, minRadius=17, maxRadius=160)
+    timings["cv2.HoughCircles"] = time.time()-now_time
+    now_time = time.time()
+    
     if circles is not None:
         circles = np.uint16(np.around(circles))
         i = circles[0, 0]
@@ -84,7 +108,9 @@ while True:
         posX = None
         posY = None
         radius = None
-
+        
+    timings["total_time"] = time.time()- timings["total_time"]
+    print ("Timings: " + '\t'.join(["%s= %fms"%(k,v*1000.0) for k,v in timings.iteritems]))
     counter.increment()
     if counter.elapsed() > 5:
         counter.stop()
