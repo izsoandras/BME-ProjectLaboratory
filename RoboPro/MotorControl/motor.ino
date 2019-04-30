@@ -26,18 +26,19 @@ void sensorInit(){
 }
 
 void setMotorSpeed(int speedL, int speedR){
-  
+  int realSpeedL = 40 + speedL*0.6;
+  int realSpeedR = 40 + speedR*0.6;
   
   if (speedL == 0)
   {
     ML.setmotor(_SHORT_BRAKE);
   }
   else if (speedL > 0) {
-    ML.setmotor(_CCW, speedL);
+    ML.setmotor(_CCW, realSpeedL);
   }
   else
   {
-    ML.setmotor(_CW, -1 * speedL);
+    ML.setmotor(_CW, -1 * realSpeedL);
   }
 
   if (speedR == 0)
@@ -45,11 +46,11 @@ void setMotorSpeed(int speedL, int speedR){
     MR.setmotor(_SHORT_BRAKE);
   }
   else if (speedR > 0) {
-    MR.setmotor(_CW, speedR);
+    MR.setmotor(_CW, realSpeedR);
   }
   else
   {
-    MR.setmotor(_CCW, -1 * speedR);
+    MR.setmotor(_CCW, -1 * realSpeedR);
   }
 }
 
