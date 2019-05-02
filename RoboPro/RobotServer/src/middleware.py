@@ -19,24 +19,25 @@ class MyMotor(object):
 
     def _serial_write(self, msg):
         self.ser.write(str.encode(msg))
-
+        self.ser.flush()
+        self.ser.reset_input_buffer()
         if self._logger is not None:
             self._logger.log("Serial write: " + msg)
 
-        time.sleep(0.05)
-        while self.ser.in_waiting > 0:
-            line = self.ser.readline().decode("utf-8")
-            if self._logger is not None:
-                self._logger.log("Serial read: " + line)
-            if line[0:2] == "S:":
-                self._leftCurrSpeed = int(line[2:line.find(",")])
-                self._rightCurrSpeed = int(line[line.find(",")+1:])
 
-            elif line[0:2] == "P:":
-                self._pwm = int(line[2:])
-
-            elif line[0:2] == "L:":
-                self._led = int(line[2:])
+        # time.sleep(0.01)
+        # while self.ser.in_waiting > 0:
+        #     line = self.ser.readline().decode("utf-8")
+        #     if self._logger is not None:
+        #         self._logger.log("Serial read: " + line)
+        #     if line[0:2] == "S:":
+        #         self._leftCurrSpeed = int(line[2:line.find(",")])
+        #         self._rightCurrSpeed = int(line[line.find(",")+1:])
+        #
+        #     elif line[0:2] == "P:":
+        #         self._pwm = int(line[2:])
+        #     elif line[0:2] == "L:":
+        #         self._led = int(line[2:])
 
 
     @property
