@@ -26,8 +26,8 @@ void sensorInit(){
 }
 
 void setMotorSpeed(int speedL, int speedR){
-  int realSpeedL = 40 + speedL*0.6;
-  int realSpeedR = 40 + speedR*0.6;
+  int realSpeedL = 40 + abs(speedL)*0.6;
+  int realSpeedR = 40 + abs(speedR)*0.6;
   
   if (speedL == 0)
   {
@@ -38,7 +38,7 @@ void setMotorSpeed(int speedL, int speedR){
   }
   else
   {
-    ML.setmotor(_CW, -1 * realSpeedL);
+    ML.setmotor(_CW, realSpeedL);
   }
 
   if (speedR == 0)
@@ -50,7 +50,7 @@ void setMotorSpeed(int speedL, int speedR){
   }
   else
   {
-    MR.setmotor(_CCW, -1 * realSpeedR);
+    MR.setmotor(_CCW, realSpeedR);
   }
 }
 

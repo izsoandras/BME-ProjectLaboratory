@@ -142,7 +142,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
                     motor.turnRight()
             else:
                 if buttons[1] == buttons[3]:
-                    motor.reverse()
+                    motor.directSpeed(-60,-60)
                 elif buttons[1]:
                     motor.reverse()
                     motor.turnLeft()
@@ -207,7 +207,7 @@ if __name__ == "__main__":
     while ser.in_waiting > 0:
         msg = ser.readline()
         print(msg)
-        logger.log("Serial read: " + ser.readline())
+        logger.log("Serial read: " + ser.readline().decode("utf-8"))
     
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(8888)

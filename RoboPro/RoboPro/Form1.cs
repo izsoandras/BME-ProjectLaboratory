@@ -530,7 +530,10 @@ namespace RoboPro
             }
             if (webSocket.IsOpen)
             {
-                webSocket.SendMessage("SN:All");
+                webSocket.SendMessage("SR:M:");
+                webSocket.SendMessage("SR:T:");
+                webSocket.SendMessage("SR:H:");
+                webSocket.SendMessage("SR:P:");
             }
         }
 

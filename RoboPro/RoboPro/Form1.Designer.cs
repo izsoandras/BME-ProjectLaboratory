@@ -48,6 +48,7 @@
             this.chartPress = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chartHumid = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chartTemp = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.compass = new RoboPro.Compass();
             this.tbConsole = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.btnStreamConnect = new System.Windows.Forms.Button();
@@ -75,7 +76,6 @@
             this.btnSerialSend = new System.Windows.Forms.Button();
             this.tbSerialSend = new System.Windows.Forms.TextBox();
             this.timerSensor = new System.Windows.Forms.Timer(this.components);
-            this.compass = new RoboPro.Compass();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -262,6 +262,14 @@
             title3.Name = "Title1";
             title3.Text = "Temperature";
             this.chartTemp.Titles.Add(title3);
+            // 
+            // compass
+            // 
+            this.compass.Heading = ((System.Drawing.PointF)(resources.GetObject("compass.Heading")));
+            this.compass.Location = new System.Drawing.Point(379, 0);
+            this.compass.Name = "compass";
+            this.compass.Size = new System.Drawing.Size(150, 150);
+            this.compass.TabIndex = 0;
             // 
             // tbConsole
             // 
@@ -558,16 +566,8 @@
             // 
             // timerSensor
             // 
-            this.timerSensor.Interval = 1000;
+            this.timerSensor.Interval = 3000;
             this.timerSensor.Tick += new System.EventHandler(this.timerSensor_Tick);
-            // 
-            // compass
-            // 
-            this.compass.Heading = ((System.Drawing.PointF)(resources.GetObject("compass.Heading")));
-            this.compass.Location = new System.Drawing.Point(379, 0);
-            this.compass.Name = "compass";
-            this.compass.Size = new System.Drawing.Size(150, 150);
-            this.compass.TabIndex = 0;
             // 
             // robotClientForm
             // 

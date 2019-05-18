@@ -181,4 +181,17 @@ X USB3 ~ 850 -150 100 L 50 50 1 1 I
 ENDDRAW
 ENDDEF
 #
+# RPi_cam
+#
+DEF RPi_cam U 0 40 Y Y 1 F N
+F0 "U" 0 0 50 H V C CNN
+F1 "RPi_cam" 0 -200 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+S -250 -50 200 -150 0 1 0 N
+X Video_out ~ -350 -100 100 R 50 50 1 1 O
+ENDDRAW
+ENDDEF
+#
 #End Library
