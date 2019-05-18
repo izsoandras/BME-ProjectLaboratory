@@ -14,6 +14,11 @@ def signum(a):
     return -1 if a < 0 else 1
 
 
+SET_GUI = True
+DEBUG_MOTORSPEED = False
+DEBUG_TIMING = False
+DEBUG_CIRCLEPOS = False
+
 motor = mw.MyMotor("/dev/ttyACM0", 115200)
 motor.pwm = 50
 
@@ -55,15 +60,19 @@ last_movement_time = time.time()
 # red filter values
 red_lower_max_h = 10  # hue -> color
 red_upper_min_h = 160  # hue -> color
-red_min_s = 10  # saturation -> white - colorful
-red_min_v = 10  # value -> black - birght
+red_min_s = 100  # saturation -> white - colorful
+red_min_v = 100  # value -> black - birght
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(26, GPIO.OUT)
 GPIO.output(26, GPIO.LOW)
+GPIO.setup(19, GPIO.OUT)
+GPIO.output(19, GPIO.LOW)
+gpioFrame = False
 
-main_window = "Camera image"
-cv2.namedWindow(main_window)
+if SET_GUI:
+    main_window = "Camera image"
+    cv2.namedWindow(main_window)
 
 
 def on_trackbar_min_s(val):
@@ -81,21 +90,23 @@ def on_trackbar_lower_max_h(val):
     red_lower_max_h = val
 
 
-def on_trackbar_min_v(val):
+def on_trackbar_upper_min_h(val):
     global red_upper_min_h
     red_upper_min_h = val
 
 
-cv2.createTrackbar("Upper red min H:", main_window, 0, 179, on_trackbar_min_v)
-cv2.createTrackbar("Lower red max H:", main_window, 0, 179, on_trackbar_lower_max_h)
-cv2.createTrackbar("Red min S:", main_window, 0, 255, on_trackbar_min_s)
-cv2.createTrackbar("Red min V:", main_window, 0, 255, on_trackbar_min_v)
+if SET_GUI:
+    cv2.createTrackbar("Upper red min H:", main_window, 0, 179, on_trackbar_upper_min_h)
+    cv2.createTrackbar("Lower red max H:", main_window, 0, 179, on_trackbar_lower_max_h)
+    cv2.createTrackbar("Red min S:", main_window, 0, 255, on_trackbar_min_s)
+    cv2.createTrackbar("Red min V:", main_window, 0, 255, on_trackbar_min_v)
 
 # image process loop
 while True:
     # remember the time for profiling
-    timings = {"total_time": time.time()}
-    now_time = time.time()
+    if DEBUG_TIMING:
+        timings = {"total_time": time.time()}
+        now_time = time.time()
 
     # read the image from the camera
     image = camera.read()
@@ -103,8 +114,12 @@ while True:
         print("No image received")
         continue
 
-    timings["camera.read"] = time.time() - now_time
-    now_time = time.time()
+    gpioFrame = not gpioFrame
+    GPIO.output(19, GPIO.HIGH if gpioFrame else GPIO.LOW)
+
+    if DEBUG_TIMING:
+        timings["camera.read"] = time.time() - now_time
+        now_time = time.time()
 
     # TODO: ROI
     # if posX is not None:
@@ -113,29 +128,33 @@ while True:
     # switch to HSV colorspace for easier color filter
     hsv = cv2.cvtColor(np.uint8(image), cv2.COLOR_BGR2HSV)
 
-    timings["cv2.cvtColor"] = time.time() - now_time
-    now_time = time.time()
+    if DEBUG_TIMING:
+        timings["cv2.cvtColor"] = time.time() - now_time
+        now_time = time.time()
 
-    print("{}\t{}\t{}\t{}".format(red_lower_max_h, red_upper_min_h, red_min_s, red_min_v))
+
     # filter the 2 red parts of colorspace
     mask_lower = cv2.inRange(hsv, np.array([0, red_min_s, red_min_v]), np.array([red_lower_max_h, 255, 255]))
     mask_upper = cv2.inRange(hsv, np.array([red_upper_min_h, red_min_s, red_min_v]), np.array([179, 255, 255]))
 
-    timings["2x cv2.inRange"] = time.time() - now_time
-    now_time = time.time()
+    if DEBUG_TIMING:
+        timings["2x cv2.inRange"] = time.time() - now_time
+        now_time = time.time()
 
     # unite the two red parts
     mask_red = cv2.addWeighted(mask_upper, 1, mask_lower, 1, 0)
     # mask_red = cv2.inRange(hsv, np.array([80, 100, 120]), np.array([100, 255, 255]))
 
-    timings["cv2.addWeighted"] = time.time() - now_time
-    now_time = time.time()
+    if DEBUG_TIMING:
+        timings["cv2.addWeighted"] = time.time() - now_time
+        now_time = time.time()
 
     # median blur for better recognition
     mask_red = cv2.medianBlur(mask_red, 3)
 
-    timings["cv2.medianBlur"] = time.time() - now_time
-    now_time = time.time()
+    if DEBUG_TIMING:
+        timings["cv2.medianBlur"] = time.time() - now_time
+        now_time = time.time()
 
     # erosion and dilation - removed for extra speed
     # kernel = np.ones((9, 9), np.uint8)
@@ -145,8 +164,9 @@ while True:
     # find circles
     circles = cv2.HoughCircles(mask_red, cv2.HOUGH_GRADIENT, 1, 20, param1=100, param2=10, minRadius=7, maxRadius=320)
 
-    timings["cv2.HoughCircles"] = time.time() - now_time
-    now_time = time.time()
+    if DEBUG_TIMING:
+        timings["cv2.HoughCircles (red)"] = time.time() - now_time
+        now_time = time.time()
 
     # control the robot according to the measures
     if circles is not None:  # or time.time() - last_circle_time < 3:
@@ -157,7 +177,8 @@ while True:
             posX = i[0]
             posY = i[1]
             radius = i[2]
-            print("X: {}\tY: {}\tr: {}\t".format(posX, posY, radius))
+            if DEBUG_CIRCLEPOS:
+                print("X: {}\tY: {}\tr: {}\t".format(posX, posY, radius))
 
             xLower = max(posX - int(1.5 * radius), 0)
             xHigher = min(posX + int(1.5 * radius), width - 1)
@@ -165,15 +186,32 @@ while True:
             yHigher = min(posY + int(1.5 * radius), height - 1)
             roi = cv2.cvtColor(image[yLower: yHigher,
                                xLower: xHigher], cv2.COLOR_BGR2GRAY)
+
+            if DEBUG_TIMING:
+                timings["ROI"] = time.time() - now_time
+                now_time = time.time()
+
+            if SET_GUI:
+                # draw the outer circle
+                cv2.circle(image, (posX, posY), radius, (0, 0, 0), 2)
+                # draw the center of the circle
+                cv2.circle(image, (posX, posY), 2, (0, 0, 0), 3)
+
             if roi is not None:
                 graycircles = cv2.HoughCircles(roi, cv2.HOUGH_GRADIENT, 1, 20, param1=100, param2=10,
                                                minRadius=int(0.7 * radius), maxRadius=2 * radius)
+
+                if DEBUG_TIMING:
+                    timings["cv2.HoughCircles (grayscale)"] = time.time() - now_time
+                    now_time = time.time()
+
                 if graycircles is not None:
                     j = graycircles[0, 0]
                     posX = xLower + j[0]
                     posY = yLower + j[1]
                     radius = j[2]
-                    print("\tX: {}\tY: {}\tr: {}\t".format(posX, posY, radius))
+                    if DEBUG_CIRCLEPOS:
+                        print("\tX: {}\tY: {}\tr: {}\t".format(posX, posY, radius))
 
             GPIO.output(26, GPIO.HIGH)
 
@@ -201,13 +239,15 @@ while True:
         radius_prev = radius
         posX_prev = posX
 
-        timings["motor control"] = time.time() - now_time
-        now_time = time.time()
+        if DEBUG_TIMING:
+            timings["motor control"] = time.time() - now_time
+            now_time = time.time()
 
-        # draw the outer circle
-        cv2.circle(image, (i[0], i[1]), i[2], (0, 255, 0), 2)
-        # draw the center of the circle
-        cv2.circle(image, (i[0], i[1]), 2, (0, 255, 0), 3)
+        if SET_GUI:
+            # draw the outer circle
+            cv2.circle(image, (int(posX), int(posY)), int(radius), (0, 255, 0), 2)
+            # draw the center of the circle
+            cv2.circle(image, (int(posX), int(posY)), 2, (0, 255, 0), 3)
 
         # if graycircles is not None:
         #    cv2.circle(gray, (j[0], j[1]), j[2], (0, 255, 0), 2)
@@ -218,29 +258,34 @@ while True:
         GPIO.output(26, GPIO.LOW)
         if 5 < time.time() - last_movement_time < 12:
             motor.directSpeed(signum(angleErr) * 80, signum(angleErr) * -80)
-            print("S:{},{}".format(signum(angleErr) * 80, signum(angleErr) * -80))
+            if DEBUG_MOTORSPEED:
+                print("S:{},{}".format(signum(angleErr) * 80, signum(angleErr) * -80))
         else:
             motor.stop()
             posX = None
             posY = None
             radius = None
-            timings["motor stop"] = time.time() - now_time
-            now_time = time.time()
+            if DEBUG_TIMING:
+                timings["motor stop"] = time.time() - now_time
+                now_time = time.time()
 
-    timings["total_time"] = time.time() - timings["total_time"]
-    # print("Timings: " + '\t'.join(["%s= %fms"%(k,v*1000.0) for (k,v) in timings.items()]))
+    if DEBUG_TIMING:
+        timings["total_time"] = time.time() - timings["total_time"]
+        print("Timings: " + '\t'.join(["%s= %fms"%(k,v*1000.0) for (k,v) in timings.items()]))
 
-    counter.increment()
-    if counter.elapsed() > 5:
-        counter.stop()
-        print(counter.fps())
-        counter.start()
+    #
+    # counter.increment()
+    # if counter.elapsed() > 5:
+    #     counter.stop()
+    #     print(counter.fps())
+    #     counter.start()
 
-    # show the frame
-    # cv2.imshow(main_window, image)
-    cv2.imshow("Red", mask_red)
-    # if roi is not None:
-    #   cv2.imshow("roi", roi)
+    if SET_GUI:
+        # show the frame
+        cv2.imshow(main_window, image)
+        cv2.imshow("Red", mask_red)
+        if roi is not None:
+            cv2.imshow("roi", roi)
 
     key = cv2.waitKey(1) & 0xFF
 
