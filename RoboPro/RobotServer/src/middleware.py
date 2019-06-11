@@ -10,8 +10,8 @@ class MyMotor(object):
         self._baseSpeed = 80
         self._rightCurrSpeed = 0
         self._leftCurrSpeed = 0
-        self._dirL = 1
-        self._dirR = 1
+        self._dirL = 0
+        self._dirR = 0
         self._turnRatio = 1
         self._logger = logger
         self._led = 0
@@ -108,11 +108,11 @@ class MyMotor(object):
         self._updateSpeed()
 
     def turnLeft(self):
-        self._turnRatio = 0.8
+        self._turnRatio = 0.6
         self._updateSpeed()
 
     def turnRight(self):
-        self._turnRatio = 1.2
+        self._turnRatio = 1.4
         self._updateSpeed()
 
     def turn(self, turnRatio):

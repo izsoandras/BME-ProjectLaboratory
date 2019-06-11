@@ -3441,7 +3441,7 @@ namespace WebSocketSharp
     {
       if (_readyState != WebSocketState.Open) {
         var msg = "The current state of the connection is not Open.";
-        throw new InvalidOperationException (msg);
+        wthrow new InvalidOperationException (msg);
       }
 
       if (data == null)

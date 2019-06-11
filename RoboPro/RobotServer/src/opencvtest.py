@@ -14,7 +14,7 @@ def signum(a):
     return -1 if a < 0 else 1
 
 
-SET_GUI = True
+SET_GUI = False
 DEBUG_MOTORSPEED = False
 DEBUG_TIMING = False
 DEBUG_CIRCLEPOS = False
@@ -48,11 +48,11 @@ distIntegral = 0
 angleIntegral = 0
 distDeriv = 0
 angleDeriv = 0
-Kp_dist = 10
+Kp_dist = 6
 Ki_dist = 0
 Kd_dist = 0
-Kp_angle = 0.7
-Ki_angle = 30
+Kp_angle = 0.4
+Ki_angle = 20
 Kd_angle = 0
 last_circle_time = 0
 last_movement_time = time.time()
@@ -198,7 +198,7 @@ while True:
                 cv2.circle(image, (posX, posY), 2, (0, 0, 0), 3)
 
             if roi is not None:
-                graycircles = cv2.HoughCircles(roi, cv2.HOUGH_GRADIENT, 1, 20, param1=100, param2=10,
+                graycircles = cv2.HoughCircles(roi, cv2.HOUGH_GRADIENT, 1, 20, param1=100, param2=80,
                                                minRadius=int(0.7 * radius), maxRadius=2 * radius)
 
                 if DEBUG_TIMING:
@@ -257,9 +257,9 @@ while True:
     else:
         GPIO.output(26, GPIO.LOW)
         if 5 < time.time() - last_movement_time < 12:
-            motor.directSpeed(signum(angleErr) * 80, signum(angleErr) * -80)
+            motor.directSpeed(signum(angleErr) * 40, signum(angleErr) * -40)
             if DEBUG_MOTORSPEED:
-                print("S:{},{}".format(signum(angleErr) * 80, signum(angleErr) * -80))
+                print("S:{},{}".format(signum(angleErr) * 40, signum(angleErr) * -40))
         else:
             motor.stop()
             posX = None
@@ -283,6 +283,7 @@ while True:
     if SET_GUI:
         # show the frame
         cv2.imshow(main_window, image)
+        cv2.imshow("HSV", hsv)
         cv2.imshow("Red", mask_red)
         if roi is not None:
             cv2.imshow("roi", roi)

@@ -395,6 +395,18 @@ namespace RoboPro
                 if (HandledKeyEvent != null)
                     HandledKeyEvent('D', 'U');
             }
+            else if (e.KeyCode == Keys.Add)
+            {
+                logger.LogMsg("Key down: +");
+                if (HandledKeyEvent != null)
+                    HandledKeyEvent('+', 'U');
+            }
+            else if (e.KeyCode == Keys.Subtract)
+            {
+                logger.LogMsg("Key down: -");
+                if (HandledKeyEvent != null)
+                    HandledKeyEvent('-', 'U');
+            }
 
         }
 
