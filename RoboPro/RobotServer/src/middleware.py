@@ -15,7 +15,7 @@ class MyMotor(object):
         self._turnRatio = 1
         self._logger = logger
         self._led = 0
-        self.getStatus()
+
 
     def _serial_write(self, msg):
         self.ser.write(str.encode(msg))

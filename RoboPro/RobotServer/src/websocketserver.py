@@ -75,11 +75,15 @@ class WSHandler(tornado.websocket.WebSocketHandler):
                 print(buttons)
 
                 # Perform the command
+                # If both or neither of W, S is pressed
                 if buttons[0] == buttons[2]:
+                    # If both or neither of A, D is pressed
                     if buttons[1] == buttons[3]:
                         motor.stop()
+                    # If A is pressed
                     elif buttons[1]:
                         motor.rotateLeft()
+                    # If B is pressed
                     else:
                         motor.rotateRight()
                 elif buttons[0]:

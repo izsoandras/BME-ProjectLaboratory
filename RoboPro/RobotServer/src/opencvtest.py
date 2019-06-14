@@ -13,68 +13,69 @@ from fps import FPS
 def signum(a):
     return -1 if a < 0 else 1
 
+# DEBUG values
+SET_GUI = False             # Do or do not show GUI
+DEBUG_MOTORSPEED = False    # Do or do not write motor speed commands on console
+DEBUG_TIMING = False        # Do or do not write how much time each processing step takes on console
+DEBUG_CIRCLEPOS = True      # Do or do not write detected circle position on console
 
-SET_GUI = False
-DEBUG_MOTORSPEED = False
-DEBUG_TIMING = False
-DEBUG_CIRCLEPOS = False
-
+# Initialize the motor object
 motor = mw.MyMotor("/dev/ttyACM0", 115200)
 motor.pwm = 50
 
 # initialize the camera
 width = 320
 height = 240
-distRef = 20
 camera = PiVideoStream((width, height), 30).start()
 counter = FPS()
 counter.start()
 # allow the camera to warmup capture frames from the camera
 time.sleep(0.5)
 
-# controller variables
-posX = None
-posX_prev = 0
-posY = None
-radius = None
-radius_prev = 0
-speed = 0
-angleCorr = 0
-roi = None
+# detection variables
+posX = None                 # X position
+posX_prev = 0               # X position in the previous iteration
+posY = None                 # Y position
+posX_exp_filter_coeff = 0.8 # The amount of how much the current measurement changes the position. [0,1]. current = alpha * measurement + (1-alpha) * previous
+radius = None               # Circle radius
+radius_prev = 0             # Previous circle radius
+rad_exp_filter_coeff = 0.8  # The amount of how much the current measurement changes the radius. [0,1]. current = alpha * measurement + (1-alpha) * previous
+speed = 0                   # Speed to send to the motor controller
+angleCorr = 0               # The difference between the two tracks so the robot turns
+roi = None                  # Part of the image where we expect to find the ball
 
-angleErr = 0
-distErr = 0
-distIntegral = 0
-angleIntegral = 0
-distDeriv = 0
-angleDeriv = 0
-Kp_dist = 6
-Ki_dist = 0
-Kd_dist = 0
-Kp_angle = 0.4
-Ki_angle = 20
-Kd_angle = 0
-last_circle_time = 0
-last_movement_time = time.time()
+# PID control variables
+distRef = 20                # Reference distance
+distErr = 0                 # Difference between the actual distance of the ball and the ref
+angleErr = 0                # Difference between the actual angle and the ref (= 0)
+distIntegral = 0            # Integral of the distance error for calculating the I part
+angleIntegral = 0           # Integral of the angle error for calculating the I part
+distDeriv = 0               # Derivative of the distance error for calculating the D part
+angleDeriv = 0              # Derivative of the angle error for calculating the D part
+Kp_dist = 2                 # Coefficient of the P part of the speed PID
+Ki_dist = 0                 # Coefficient of the I part of the speed PID
+Kd_dist = 0                 # Coefficient of the D part of the speed PID
+Kp_angle = 0.1              # Coefficient of the P part of the angle PID
+Ki_angle = 8                # Coefficient of the I part of the angle PID
+Kd_angle = 0                # Coefficient of the D part of the angle PID
+last_circle_time = 0        # Time elapsed since circle was last detected
+last_movement_time = time.time()    # Time elapsed since last movement
 
 # red filter values
-red_lower_max_h = 10  # hue -> color
-red_upper_min_h = 160  # hue -> color
-red_min_s = 100  # saturation -> white - colorful
-red_min_v = 100  # value -> black - birght
+red_lower_max_h = 6         # hue -> color
+red_upper_min_h = 159       # hue -> color
+red_min_s = 100             # saturation -> white - colorful
+red_min_v = 100             # value -> black - birght
 
+# set up the used GPIO pins
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(26, GPIO.OUT)
+GPIO.setup(26, GPIO.OUT)    # LED showing if circle is detected
 GPIO.output(26, GPIO.LOW)
-GPIO.setup(19, GPIO.OUT)
+GPIO.setup(19, GPIO.OUT)    # LED showing framerate (gets inverted every frame)
 GPIO.output(19, GPIO.LOW)
 gpioFrame = False
 
-if SET_GUI:
-    main_window = "Camera image"
-    cv2.namedWindow(main_window)
-
-
+# Change the global values according to the trackbars
 def on_trackbar_min_s(val):
     global red_min_s
     red_min_s = val
@@ -94,12 +95,18 @@ def on_trackbar_upper_min_h(val):
     global red_upper_min_h
     red_upper_min_h = val
 
-
+# Create the GUI
 if SET_GUI:
+    main_window = "Camera image"
+    cv2.namedWindow(main_window)
     cv2.createTrackbar("Upper red min H:", main_window, 0, 179, on_trackbar_upper_min_h)
+    cv2.setTrackbarPos("Upper red min H:", main_window, red_upper_min_h)
     cv2.createTrackbar("Lower red max H:", main_window, 0, 179, on_trackbar_lower_max_h)
+    cv2.setTrackbarPos("Lower red max H:", main_window, red_lower_max_h)
     cv2.createTrackbar("Red min S:", main_window, 0, 255, on_trackbar_min_s)
+    cv2.setTrackbarPos("Red min S:", main_window, red_min_s)
     cv2.createTrackbar("Red min V:", main_window, 0, 255, on_trackbar_min_v)
+    cv2.setTrackbarPos("Red min V:", main_window, red_min_v)
 
 # image process loop
 while True:
@@ -216,8 +223,8 @@ while True:
             GPIO.output(26, GPIO.HIGH)
 
             # exp avg for noise reduction
-            radius = 0.8 * radius_prev + 0.2 * radius
-            posX = 0.8 * posX_prev + 0.2 * posX
+            radius = rad_exp_filter_coeff * radius + (1-rad_exp_filter_coeff) * radius_prev
+            posX = posX_exp_filter_coeff * posX + (1-posX_exp_filter_coeff) * posX_prev
 
             # calculate PID parameters
             distErr = distRef - radius
